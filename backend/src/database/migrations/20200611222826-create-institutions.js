@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('ongs', {
+    return queryInterface.createTable('institutions', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -28,25 +28,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      provider_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'providers', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: false,
+      detail: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       avatar_id: {
         type: Sequelize.INTEGER,
         references: { model: 'files', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         allowNull: true,
       },
-      photos_id: {
+      owner_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'files', key: 'id' },
+        references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         allowNull: true,
       },
       created_at: {
@@ -61,6 +58,6 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    return queryInterface.dropTable('ongs');
+    return queryInterface.dropTable('institutions');
   },
 };
