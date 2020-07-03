@@ -22,8 +22,11 @@ routes.put('/users', UserController.update);
 
 routes.post('/institutions', InstitutionController.store);
 routes.put('/institutions', InstitutionController.update);
+routes.delete('/institutions/:id', InstitutionController.delete);
 
 routes.post('/animals', AnimalController.store);
+routes.put('/animals/:id', AnimalController.update);
+routes.delete('/animals/:id', AnimalController.delete);
 
 routes.post('/admins', AdminController.store);
 

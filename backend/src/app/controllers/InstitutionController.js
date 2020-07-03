@@ -1,8 +1,21 @@
+import * as Yup from 'yup';
 import Institution from '../models/Institution';
 import File from '../models/File';
 
 class InstitutionController {
   async store(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string().email().required(),
+      street: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string(),
+      detail: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Erro de validação' });
+    }
     const { name, email, street, city, state, detail } = req.body;
 
     const institutionExists = await Institution.findOne({
@@ -10,7 +23,7 @@ class InstitutionController {
     });
 
     if (institutionExists) {
-      return res.status(400).json({ error: 'Institution already exists.' });
+      return res.status(400).json({ error: 'Esta instituição ja existe.' });
     }
 
     const newInstitution = await Institution.create({
@@ -23,18 +36,33 @@ class InstitutionController {
       owner_id: req.userId,
     });
 
+    // Criação do owner como admin( a resolver)
+
     return res.json(newInstitution);
   }
 
   async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      email: Yup.string().email(),
+      street: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string(),
+      detail: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Erro de validação' });
+    }
+
     const institution = await Institution.findOne({
       where: { owner_id: req.userId },
     });
 
     if (!institution) {
-      return res
-        .status(400)
-        .json({ error: 'Somenete o criador pode fazer essas alterações.' });
+      return res.status(401).json({
+        error: 'Somente o criado pode fazer alterações.',
+      });
     }
 
     institution.update(req.body);
@@ -58,6 +86,23 @@ class InstitutionController {
       email,
       avatar,
     });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const institution = await Institution.findByPk(id);
+    if (!institution) {
+      return res.status(401).json({ error: 'Somente o criador pode deletar' });
+    }
+
+    if (!(institution.owner_id === req.userId)) {
+      return res.status(401).json({ error: 'Somente o criador pode deletar' });
+    }
+
+    await institution.destroy();
+
+    return res.json({ message: 'A instituição foi excluída' });
   }
 }
 
