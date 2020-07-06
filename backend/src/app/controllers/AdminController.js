@@ -3,6 +3,25 @@ import User from '../models/User';
 import Institution from '../models/Institution';
 
 class AdminController {
+  async index(req, res) {
+    // Validação do owner
+    const owner = await Institution.findOne({
+      where: { owner_id: req.userId },
+    });
+
+    if (!owner) {
+      return res
+        .status(401)
+        .json({ error: 'Não autorizado, ou a instituição não existe.' });
+    }
+
+    const list = await Admin.findAll({
+      where: { institution_id: owner.id },
+    });
+
+    return res.json(list);
+  }
+
   async store(req, res) {
     const { email } = req.body;
     // Validação do owner
@@ -36,6 +55,25 @@ class AdminController {
     });
 
     return res.json(newAdmin);
+  }
+
+  async delete(req, res) {
+    // Validação do owner
+    const ownerExist = await Institution.findOne({
+      where: { owner_id: req.userId },
+    });
+
+    if (!ownerExist) {
+      return res
+        .status(401)
+        .json({ error: 'Não autorizado, ou a instituição não existe.' });
+    }
+
+    const admin = await Admin.findByPk(req.params.id);
+
+    await admin.destroy();
+
+    return res.json({ Sucess: 'Admin excluido com sucesso!' });
   }
 }
 

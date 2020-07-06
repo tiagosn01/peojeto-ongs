@@ -3,6 +3,12 @@ import Institution from '../models/Institution';
 import File from '../models/File';
 
 class InstitutionController {
+  async index(req, res) {
+    const list = await Institution.findAll();
+
+    return res.json(list);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

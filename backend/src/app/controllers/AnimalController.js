@@ -3,6 +3,12 @@ import Animal from '../models/Animal';
 import Admin from '../models/Admin';
 
 class AnimalController {
+  async index(req, res) {
+    const list = await Animal.findAll();
+
+    return res.json(list);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
