@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   View,
+  Alert,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import * as Yup from 'yup';
+
 import Icon from 'react-native-vector-icons/Feather';
 
 import logoImg from '../../assets/logo.png';
@@ -18,7 +22,49 @@ import Input from '../../components/Input';
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
 const SignUp = () => {
+  const formRef = useRef();
+
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
   const navigation = useNavigation();
+
+  const handleSignUp = useCallback(
+    async data => {
+      try {
+        formRef.current.setErrors({});
+
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um email válido obrigatório'),
+          password: Yup.string().min(6, 'No mínimo 6 digitos.'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        console.log(data);
+
+        const errors = true;
+
+        formRef.current.setErrors(errors);
+        Alert.alert(
+          'Cadastro realizado com sucesso! Você ja pode fazer login na aplicação.',
+        );
+
+        navigation.goBack();
+      } catch (err) {
+        Alert.alert(
+          'Erro no cadastro',
+          'Ocorreu um erro ao fazer o cadastro, tente novamente',
+        );
+      }
+    },
+    [navigation],
+  );
   return (
     <>
       <KeyboardAvoidingView
@@ -35,30 +81,50 @@ const SignUp = () => {
             <View>
               <Title>Crie sua conta</Title>
             </View>
+            <Form onSubmit={handleSignUp} ref={formRef}>
+              <Input
+                name="name"
+                icon="user"
+                placeholder="Digite seu Nome"
+                returnKeyType="next"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  emailInputRef.current.focus();
+                }}
+              />
 
-            <Input
-              name="Nome"
-              icon="user"
-              placeholder="Digite seu Nome"
-              returnKeyType="next"
-            />
-
-            <Input
-              name="email"
-              icon="mail"
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              placeholder="Digite seu e-mail"
-              returnKeyType="next"
-            />
-            <Input
-              name="password"
-              icon="lock"
-              secureTextEntry
-              placeholder="Digite sua senha"
-            />
-            <Button>Cadastrar</Button>
+              <Input
+                ref={emailInputRef}
+                name="email"
+                icon="mail"
+                keyboardType="email-address"
+                autoCorrect={false}
+                autoCapitalize="none"
+                placeholder="Digite seu e-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordInputRef.current.focus();
+                }}
+              />
+              <Input
+                ref={passwordInputRef}
+                name="password"
+                icon="lock"
+                secureTextEntry
+                placeholder="Digite sua senha"
+                textContentType="newPassword"
+                onSubmitEditing={() => {
+                  formRef.current.submitForm();
+                }}
+              />
+              <Button
+                onPress={() => {
+                  formRef.current.submitForm();
+                }}
+              >
+                Cadastrar
+              </Button>
+            </Form>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>

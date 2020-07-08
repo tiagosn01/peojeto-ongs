@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 
 export const Container = styled(TouchableOpacity)`
-  width: 100%;
+  max-width: 100%;
   height: 60px;
   background: #ff9000;
   border-radius: 10px;
@@ -15,6 +15,6 @@ export const Container = styled(TouchableOpacity)`
 
 export const ButtonText = styled.Text`
   font-family: 'RobotoSlab-Medium';
-  font-size: 17px;
+  font-size: 18px;
   color: #282828;
 `;

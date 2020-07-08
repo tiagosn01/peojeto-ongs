@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
+
 import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   View,
+  Alert,
 } from 'react-native';
+
+import { Form } from '@unform/mobile';
+import * as Yup from 'yup';
 
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -25,7 +30,35 @@ import {
 } from './styles';
 
 const SignIn = () => {
+  const formRef = useRef();
   const navigation = useNavigation();
+
+  const passwordInputRef = useRef();
+
+  const handleSignIn = useCallback(async data => {
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um email válido obrigatório'),
+        password: Yup.string().required('Senha obrigatória.'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      console.log(data);
+
+      // await signIn({
+      //   email: data.email,
+      //   password: data.password,
+      // });
+    } catch (err) {
+      Alert.alert('Erro na autenticação', 'Usuário ou senha inválido');
+    }
+  }, []);
+
   return (
     <>
       <KeyboardAvoidingView
@@ -43,23 +76,38 @@ const SignIn = () => {
               <Title>Faça seu login</Title>
             </View>
 
-            <Input
-              name="email"
-              icon="mail"
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              placeholder="Digite seu e-mail"
-              returnKeyType="next"
-            />
-            <Input
-              name="password"
-              icon="lock"
-              secureTextEntry
-              placeholder="Digite sua senha"
-            />
+            <Form onSubmit={handleSignIn} ref={formRef}>
+              <Input
+                name="email"
+                icon="mail"
+                keyboardType="email-address"
+                autoCorrect={false}
+                autoCapitalize="none"
+                placeholder="Digite seu e-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordInputRef.current.focus();
+                }}
+              />
+              <Input
+                ref={passwordInputRef}
+                name="password"
+                icon="lock"
+                secureTextEntry
+                placeholder="Digite sua senha"
+                onSubmitEditing={() => {
+                  formRef.current.submitForm();
+                }}
+              />
 
-            <Button>Entrar</Button>
+              <Button
+                onPress={() => {
+                  formRef.current.submitForm();
+                }}
+              >
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPassword>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
