@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useAuth } from '../../hooks/auth';
 
 import logoImg from '../../assets/logo.png';
 
@@ -30,34 +31,36 @@ import {
 } from './styles';
 
 const SignIn = () => {
+  const { signIn } = useAuth();
   const formRef = useRef();
   const navigation = useNavigation();
 
   const passwordInputRef = useRef();
 
-  const handleSignIn = useCallback(async data => {
-    try {
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um email válido obrigatório'),
-        password: Yup.string().required('Senha obrigatória.'),
-      });
+  const handleSignIn = useCallback(
+    async data => {
+      try {
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um email válido obrigatório'),
+          password: Yup.string().required('Senha obrigatória.'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      console.log(data);
-
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // });
-    } catch (err) {
-      Alert.alert('Erro na autenticação', 'Usuário ou senha inválido');
-    }
-  }, []);
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        Alert.alert('Erro na autenticação', 'Usuário ou senha inválido');
+      }
+    },
+    [signIn],
+  );
 
   return (
     <>
@@ -110,7 +113,13 @@ const SignIn = () => {
             </Form>
 
             <ForgotPassword>
-              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+              <ForgotPasswordText
+                onPress={() => {
+                  navigation.navigate('ForgotPassword');
+                }}
+              >
+                Esqueci minha senha
+              </ForgotPasswordText>
             </ForgotPassword>
           </Container>
         </ScrollView>
