@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('animals', {
+    return queryInterface.createTable('adoptions', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -11,44 +11,27 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      sex: {
+      email: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      type: {
+      cpf: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      situation: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
+      voluntary: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       institution_id: {
         type: Sequelize.INTEGER,
         references: { model: 'institutions', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
         allowNull: false,
       },
-      avatar_id: {
+      animal_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'files', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
-      },
-      detail: {
-        type: Sequelize.STRING,
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
+        references: { model: 'animals', key: 'id' },
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -62,6 +45,6 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    return queryInterface.dropTable('animals');
+    return queryInterface.dropTable('adoptions');
   },
 };

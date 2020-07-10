@@ -1,10 +1,21 @@
 import * as Yup from 'yup';
 import Institution from '../models/Institution';
 import File from '../models/File';
+import Admin from '../models/Admin';
+import User from '../models/User';
 
 class InstitutionController {
   async index(req, res) {
-    const list = await Institution.findAll();
+    const list = await Institution.findAll({
+      attributes: ['id', 'name', 'email', 'avatar_id'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
+    });
 
     return res.json(list);
   }
@@ -42,7 +53,21 @@ class InstitutionController {
       owner_id: req.userId,
     });
 
-    // Criação do owner como admin( a resolver)
+    // Criação do owner como admin()
+    const institution = await Institution.findOne({
+      where: { owner_id: req.userId },
+    });
+    const user = await User.findByPk(req.userId);
+
+    if (!institution || !user) {
+      return res.status(400).json({ error: 'Erro na criação do admin.' });
+    }
+
+    await Admin.create({
+      email: user.email,
+      user_id: user.id,
+      institution_id: institution.id,
+    });
 
     return res.json(newInstitution);
   }

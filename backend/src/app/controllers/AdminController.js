@@ -3,20 +3,32 @@ import User from '../models/User';
 import Institution from '../models/Institution';
 
 class AdminController {
+  async show(req, res) {
+    const admin = await Admin.findOne({
+      where: { user_id: req.userId },
+    });
+
+    if (!admin) {
+      return res.status(401).json({ error: 'Não autorizado.' });
+    }
+
+    return res.json(admin);
+  }
+
   async index(req, res) {
     // Validação do owner
-    const owner = await Institution.findOne({
+    const institution = await Institution.findOne({
       where: { owner_id: req.userId },
     });
 
-    if (!owner) {
+    if (!institution) {
       return res
         .status(401)
         .json({ error: 'Não autorizado, ou a instituição não existe.' });
     }
 
     const list = await Admin.findAll({
-      where: { institution_id: owner.id },
+      where: { institution_id: institution.id },
     });
 
     return res.json(list);

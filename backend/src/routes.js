@@ -9,6 +9,8 @@ import FileController from './app/controllers/FileController';
 import InstitutionController from './app/controllers/InstitutionController';
 import AdminController from './app/controllers/AdminController';
 import AnimalController from './app/controllers/AnimalController';
+import AuthController from './app/controllers/AuthController';
+import AdoptionController from './app/controllers/AdoptionController';
 
 const upload = multer(multerConfig);
 const routes = new Router();
@@ -16,6 +18,8 @@ const routes = new Router();
 routes.post('/sessions', SessionController.store);
 
 routes.post('/users', UserController.store);
+
+routes.put('/forgot-password', AuthController.update);
 
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
@@ -29,6 +33,10 @@ routes.get('/animals', AnimalController.index);
 routes.post('/animals', AnimalController.store);
 routes.put('/animals/:id', AnimalController.update);
 routes.delete('/animals/:id', AnimalController.delete);
+
+routes.post('/adoptions', AdoptionController.store);
+
+routes.get('/isadmins', AdminController.show);
 
 routes.get('/admins', AdminController.index);
 routes.post('/admins', AdminController.store);

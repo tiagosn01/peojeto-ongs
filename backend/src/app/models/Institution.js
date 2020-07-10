@@ -22,7 +22,7 @@ class Institution extends Model {
 
   static associate(models) {
     this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
-    this.belongsTo(models.User, { foreignKey: 'owner_id' });
+    this.belongsTo(models.User, { foreignKey: 'owner_id', as: 'owner' });
   }
 
   checkPassword(password) {
