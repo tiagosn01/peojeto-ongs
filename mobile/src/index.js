@@ -11,7 +11,7 @@ import './config/ReactotronConfig';
 const Index = () => {
   return (
     <NavigationContainer>
-      <StatusBar barStyle="light-content" backgroundColor="#005338" />
+      <StatusBar barStyle="light-content" backgroundColor="#0F2417" />
       <AppProvider>
         <Routes />
       </AppProvider>
