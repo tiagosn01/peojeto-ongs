@@ -6,8 +6,13 @@ import User from '../models/User';
 
 class InstitutionController {
   async index(req, res) {
+    //  const cached = await Cache.get('providers');
+
+    // if (cached) {
+    //   return res.json(cached);
+    // }
+
     const list = await Institution.findAll({
-      attributes: ['id', 'name', 'email', 'avatar_id'],
       include: [
         {
           model: File,
@@ -17,7 +22,44 @@ class InstitutionController {
       ],
     });
 
+    // await Cache.set('providers', providers);
+
     return res.json(list);
+  }
+
+  async show(req, res) {
+    //  const cached = await Cache.get('providers');
+
+    // if (cached) {
+    //   return res.json(cached);
+    // }
+
+    const admin = await Admin.findAll({
+      where: { user_id: req.userId },
+      attributes: ['id', 'email'],
+      include: [
+        {
+          model: Institution,
+          as: 'institution',
+          attributes: ['id', 'name', 'email', 'city', 'state'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['name', 'path', 'url'],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!admin) {
+      return res.status(401).json({ error: 'Não autorizado.' });
+    }
+
+    // await Cache.set('providers', providers);
+
+    return res.json(admin);
   }
 
   async store(req, res) {
@@ -40,7 +82,17 @@ class InstitutionController {
     });
 
     if (institutionExists) {
-      return res.status(400).json({ error: 'Esta instituição ja existe.' });
+      return res.status(401).json({ error: 'Esta instituição ja existe.' });
+    }
+
+    const user = await User.findByPk(req.userId);
+
+    const adminExist = await Admin.findOne({ where: { user_id: user.id } });
+
+    if (adminExist) {
+      return res
+        .status(401)
+        .json({ error: 'O admin já existe em outra instituição.' });
     }
 
     const newInstitution = await Institution.create({
@@ -57,7 +109,6 @@ class InstitutionController {
     const institution = await Institution.findOne({
       where: { owner_id: req.userId },
     });
-    const user = await User.findByPk(req.userId);
 
     if (!institution || !user) {
       return res.status(400).json({ error: 'Erro na criação do admin.' });

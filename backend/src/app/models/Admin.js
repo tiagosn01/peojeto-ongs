@@ -18,7 +18,7 @@ class Admin extends Model {
     this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     this.belongsTo(models.Institution, {
       foreignKey: 'institution_id',
-      as: 'instituion',
+      as: 'institution',
     });
   }
 }

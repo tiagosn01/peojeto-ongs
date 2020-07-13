@@ -37,7 +37,7 @@ module.exports = {
         references: { model: 'files', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        allowNull: true,
+        defaultValue: 2,
       },
       owner_id: {
         type: Sequelize.INTEGER,

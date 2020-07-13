@@ -22,9 +22,11 @@ routes.post('/users', UserController.store);
 routes.put('/forgot-password', AuthController.update);
 
 routes.use(authMiddleware);
+routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 
 routes.get('/institutions', InstitutionController.index);
+routes.get('/institutions/admin', InstitutionController.show);
 routes.post('/institutions', InstitutionController.store);
 routes.put('/institutions', InstitutionController.update);
 routes.delete('/institutions/:id', InstitutionController.delete);

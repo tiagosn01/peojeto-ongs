@@ -26,11 +26,15 @@ module.exports = {
       institution_id: {
         type: Sequelize.INTEGER,
         references: { model: 'institutions', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         allowNull: false,
       },
       animal_id: {
         type: Sequelize.INTEGER,
         references: { model: 'animals', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         allowNull: false,
       },
       created_at: {
