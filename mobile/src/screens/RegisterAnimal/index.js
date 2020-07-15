@@ -22,7 +22,7 @@ import Input from '../../components/Input';
 
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
-const SignUp = () => {
+const RegisterAnimal = () => {
   const formRef = useRef();
 
   const emailInputRef = useRef();
@@ -135,4 +135,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default RegisterAnimal;

@@ -4,9 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Dashboard from '../screens/Dashboard';
 import Animals from '../screens/Animals';
 import Adoptions from '../screens/Adoptions';
-import SignUpAnimal from '../screens/SignUpAnimal';
-import SignUpAdoption from '../screens/SignUpAdoption';
-import SignUpInstitution from '../screens/SignUpInstitution';
+import RegisterAnimal from '../screens/RegisterAnimal';
+import RegisterAdoption from '../screens/RegisterAdoption';
+import ConsultAdoption from '../screens/ConsultAdoption';
 import ProfileUser from '../screens/ProfileUser';
 import ProfileAnimal from '../screens/ProfileAnimal';
 import ProfileInstitution from '../screens/ProfileInstituion';
@@ -26,9 +26,9 @@ const AppRoutes = () => (
     <App.Screen name="Animals" component={Animals} />
     <App.Screen name="Adoptions" component={Adoptions} />
 
-    <App.Screen name="SignUpAnimal" component={SignUpAnimal} />
-    <App.Screen name="SignUpAdoption" component={SignUpAdoption} />
-    <App.Screen name="SignUpInstitution" component={SignUpInstitution} />
+    <App.Screen name="RegisterAnimal" component={RegisterAnimal} />
+    <App.Screen name="RegisterAdoption" component={RegisterAdoption} />
+    <App.Screen name="ConsultAdoption" component={ConsultAdoption} />
 
     <App.Screen name="ProfileUser" component={ProfileUser} />
     <App.Screen name="ProfileAnimal" component={ProfileAnimal} />

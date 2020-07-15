@@ -41,7 +41,7 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    api.get('/institutions/admin').then(response => {
+    api.get('/institutions-admin').then(response => {
       setAdmins(response.data);
     });
   }, []);
