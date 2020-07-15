@@ -25,20 +25,22 @@ routes.use(authMiddleware);
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 
+routes.get('/institution-show/:id', InstitutionController.display);
+
 routes.get('/institutions', InstitutionController.index);
-routes.get('/institutions/admin', InstitutionController.show);
+routes.get('/institutions-admin', InstitutionController.show);
 routes.post('/institutions', InstitutionController.store);
 routes.put('/institutions', InstitutionController.update);
 routes.delete('/institutions/:id', InstitutionController.delete);
 
-routes.get('/animals', AnimalController.index);
+routes.get('/animals/:id', AnimalController.index);
 routes.post('/animals', AnimalController.store);
 routes.put('/animals/:id', AnimalController.update);
 routes.delete('/animals/:id', AnimalController.delete);
 
 routes.post('/adoptions', AdoptionController.store);
 
-routes.get('/isadmins', AdminController.show);
+routes.get('/isadmins/:id', AdminController.show);
 
 routes.get('/admins', AdminController.index);
 routes.post('/admins', AdminController.store);

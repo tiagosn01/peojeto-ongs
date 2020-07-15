@@ -27,6 +27,34 @@ class InstitutionController {
     return res.json(list);
   }
 
+  async display(req, res) {
+    //  const cached = await Cache.get('providers');
+
+    // if (cached) {
+    //   return res.json(cached);
+    // }
+    const { id } = req.params;
+
+    const list = await Institution.findOne({
+      where: { id },
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
+    });
+
+    if (!list) {
+      return res.status(400).json({ error: 'A instituição não esxiste' });
+    }
+
+    // await Cache.set('providers', providers);
+
+    return res.json(list);
+  }
+
   async show(req, res) {
     //  const cached = await Cache.get('providers');
 
@@ -41,7 +69,7 @@ class InstitutionController {
         {
           model: Institution,
           as: 'institution',
-          attributes: ['id', 'name', 'email', 'city', 'state'],
+          attributes: ['id', 'name', 'email', 'city', 'state', 'detail'],
           include: [
             {
               model: File,

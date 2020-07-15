@@ -1,12 +1,33 @@
 import * as Yup from 'yup';
 import Animal from '../models/Animal';
+import User from '../models/User';
+import File from '../models/File';
 import Admin from '../models/Admin';
 
 class AnimalController {
   async index(req, res) {
-    const list = await Animal.findAll();
+    const { id } = req.params;
+    const listAnimals = await Animal.findAll({
+      where: {
+        institution_id: id,
+        situation: false,
+      },
+      attributes: ['id', 'name', 'sex', 'type', 'detail'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
 
-    return res.json(list);
+    return res.json(listAnimals);
   }
 
   async store(req, res) {

@@ -4,19 +4,24 @@ import Institution from '../models/Institution';
 
 class AdminController {
   async show(req, res) {
+    const { id } = req.params;
+
     const admin = await Admin.findOne({
-      where: { user_id: req.userId },
+      where: {
+        user_id: req.userId,
+        institution_id: id,
+      },
     });
 
     if (!admin) {
-      return res.status(401).json({ error: 'Não autorizado.' });
+      return res.json({});
     }
 
     return res.json(admin);
   }
 
   async index(req, res) {
-    // Validação do owner
+    // Validação do owner, para listagem de admins
     const institution = await Institution.findOne({
       where: { owner_id: req.userId },
     });
