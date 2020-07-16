@@ -13,6 +13,8 @@ export const BackButton = styled.TouchableOpacity`
   margin-top: 32px;
 `;
 
+export const Form = styled.View``;
+
 export const Title = styled.Text`
   font-size: 24px;
   color: #fff;
@@ -42,9 +44,17 @@ export const BackToSignInText = styled.Text`
 `;
 
 export const UserAvatarButton = styled.TouchableOpacity``;
+
 export const UserAvatar = styled.Image`
   width: 186px;
   height: 186px;
   border-radius: 98px;
   align-self: center;
+`;
+
+export const DrawView = styled.View`
+  border-bottom-color: gray;
+  border-bottom-width: 1px;
+  margin: 0 24px 14px;
+  padding: 14px 0 8px;
 `;

@@ -57,8 +57,22 @@ export const AuthProvider = ({ children }) => {
     setData({});
   }, []);
 
+  const updateUser = useCallback(
+    async user => {
+      await AsyncStorage.setItem('@HelpPet:user', JSON.stringify(user));
+
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [data.token],
+  );
+
   return (
-    <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, loading, signIn, signOut, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

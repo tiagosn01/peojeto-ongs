@@ -10,6 +10,7 @@ import ConsultAdoption from '../screens/ConsultAdoption';
 import ProfileUser from '../screens/ProfileUser';
 import ProfileAnimal from '../screens/ProfileAnimal';
 import ProfileInstitution from '../screens/ProfileInstituion';
+import RegisterInstitution from '../screens/RegisterInstitution';
 
 const App = createStackNavigator();
 
@@ -25,6 +26,8 @@ const AppRoutes = () => (
     <App.Screen name="Dashboard" component={Dashboard} />
     <App.Screen name="Animals" component={Animals} />
     <App.Screen name="Adoptions" component={Adoptions} />
+
+    <App.Screen name="RegisterInstitution" component={RegisterInstitution} />
 
     <App.Screen name="RegisterAnimal" component={RegisterAnimal} />
     <App.Screen name="RegisterAdoption" component={RegisterAdoption} />

@@ -10,6 +10,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
+import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../hooks/auth';
 
@@ -24,6 +25,7 @@ import {
   Title,
   UserAvatarButton,
   UserAvatar,
+  DrawView,
 } from './styles';
 
 const ProfileUser = () => {
@@ -37,43 +39,101 @@ const ProfileUser = () => {
 
   const navigation = useNavigation();
 
-  const handleSignUp = useCallback(
-    async data => {
-      try {
-        formRef.current.setErrors({});
+  const handleSignUp = useCallback(async () => {
+    try {
+      const allData = formRef.current.getData();
 
-        const schema = Yup.object().shape({
-          name: Yup.string().required(),
-          email: Yup.string().email().required(),
-          oldPassword: Yup.string().min(6),
-          password: Yup.string()
-            .min(6)
-            .when('oldPassword', (oldPassword, field) =>
-              oldPassword ? field.required() : field,
-            ),
-          confirmPassword: Yup.string().when('password', (password, field) =>
-            password ? field.required().oneOf([Yup.ref('password')]) : field,
-          ),
-        });
-
-        await schema.validate(data, {
-          abortEarly: false,
-        });
-
-        await api.put('/users', data);
-
-        Alert.alert('Alterações realizadas com sucesso!');
-
-        navigation.goBack();
-      } catch (err) {
-        Alert.alert(
-          'Erro ao atualizar.',
-          'Ocorreu um erro atualizar o cadastro, cheque os dados e tente novamente',
-        );
+      if (!allData.name) {
+        allData.name = user.name;
       }
-    },
-    [navigation],
-  );
+      if (!allData.email) {
+        allData.email = user.email;
+      }
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .required('Email Obrigatório')
+          .email('Digite um e-mail válido'),
+        oldPassword: Yup.string(),
+        password: Yup.string().when('oldPassword', {
+          is: val => !!val.length,
+          then: Yup.string().required('Campo obrigatório'),
+          otherwise: Yup.string(),
+        }),
+        confirmPassword: Yup.string()
+          .when('oldPassword', {
+            is: val => !!val.length,
+            then: Yup.string().required('Campo obrigatório'),
+            otherwise: Yup.string(),
+          })
+          .oneOf([Yup.ref('password'), null], 'Confirmação incorreta'),
+      });
+
+      await schema.validate(allData, {
+        abortEarly: false,
+      });
+
+      const { name, email, oldPassword, password, confirmPassword } = allData;
+
+      const formData = {
+        name,
+        email,
+        ...(oldPassword
+          ? {
+              oldPassword,
+              password,
+              confirmPassword,
+            }
+          : {}),
+      };
+
+      await api.put('/users', formData);
+
+      Alert.alert('Perfil atualizado com sucesso!');
+
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert(
+        'Erro ao atualizar perfil.',
+        'Cheque os dados e tente novamente',
+      );
+    }
+  }, [navigation, user]);
+
+  const handleUpdateAvatar = useCallback(() => {
+    ImagePicker.showImagePicker(
+      {
+        title: 'Selecione um avatar',
+        cancelButtonTitle: 'Cancelar',
+        takePhotoButtonTitle: 'Usar camera',
+        chooseFromLibraryButtonTitle: 'Escolher da galeria',
+      },
+      response => {
+        if (response.didCancel) {
+          return;
+        }
+
+        if (response.error) {
+          Alert.alert('Erro ao atualizar seu avatar.');
+          return;
+        }
+
+        const data = new FormData();
+
+        data.append('avatar', {
+          type: 'image/jpeg',
+          name: `${user.id}.jpg`,
+          uri: response.uri,
+        });
+
+        api.patch('users/avatar', data).then(res => {
+          console.log(res);
+        });
+      },
+    );
+  }, [user.id]);
+
   return (
     <>
       <KeyboardAvoidingView
@@ -90,13 +150,13 @@ const ProfileUser = () => {
             >
               <Icon name="chevron-left" size={24} color="#e2dcdc" />
             </BackButton>
-            <UserAvatarButton>
+            <UserAvatarButton onPress={handleUpdateAvatar}>
               <UserAvatar source={{ uri: user.avatar.url }} />
             </UserAvatarButton>
             <View>
               <Title>Meu perfil</Title>
             </View>
-            <Form onSubmit={handleSignUp} ref={formRef}>
+            <Form initialData={user} onSubmit={handleSignUp} ref={formRef}>
               <Input
                 name="name"
                 icon="user"
@@ -128,6 +188,7 @@ const ProfileUser = () => {
                 secureTextEntry
                 placeholder="Senha atual"
                 textContentType="newPassword"
+                returnKeyType="next"
                 onSubmitEditing={() => {
                   passwordInputRef.current.focus();
                 }}
@@ -140,6 +201,7 @@ const ProfileUser = () => {
                 secureTextEntry
                 placeholder="Nova senha"
                 textContentType="newPassword"
+                returnKeyType="next"
                 onSubmitEditing={() => {
                   confirmPasswordInputRef.current.focus();
                 }}
@@ -165,6 +227,14 @@ const ProfileUser = () => {
                 Confirmar alterações
               </Button>
             </Form>
+            <DrawView />
+            <Button
+              onPress={() => {
+                navigation.navigate('RegisterInstitution');
+              }}
+            >
+              Criar instituição
+            </Button>
             <Button
               onPress={() => {
                 signOut();
