@@ -104,6 +104,36 @@ class UserController {
       avatar,
     });
   }
+
+  async patch(req, res) {
+    const { id } = req.params;
+    const user = await User.findByPk(req.userId);
+
+    if (!user) {
+      return res.status(401).json('O usuário não existe');
+    }
+
+    const oldFile = await File.findOne({ where: { id: user.avatar_id } });
+
+    user.avatar_id = id;
+
+    await oldFile.destroy();
+
+    await user.save();
+
+    const responseAvatar = await User.findByPk(req.userId, {
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json(responseAvatar);
+  }
 }
 
 export default new UserController();

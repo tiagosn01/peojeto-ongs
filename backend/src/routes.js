@@ -24,6 +24,7 @@ routes.put('/forgot-password', AuthController.update);
 routes.use(authMiddleware);
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
+routes.put('/users/avatar/:id', UserController.patch);
 
 routes.get('/institution-show/:id', InstitutionController.display);
 
