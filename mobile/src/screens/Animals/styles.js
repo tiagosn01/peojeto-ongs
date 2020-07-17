@@ -38,6 +38,7 @@ export const InstitutionContainer = styled.View`
   background: #416e4b;
   border-radius: 10px;
   padding: 26px 24px;
+  margin-top: 28px;
   margin-bottom: 10px;
   flex-direction: column;
   align-items: center;
@@ -82,7 +83,7 @@ export const ListsTitle = styled.Text`
 `;
 
 export const InstitutionAdmin = styled.View`
-  padding: 28px 24px 0;
+  padding: 0 24px 0;
 `;
 
 export const InstitutionTitle = styled.Text`

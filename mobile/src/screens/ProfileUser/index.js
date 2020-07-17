@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -29,13 +29,15 @@ import {
 } from './styles';
 
 const ProfileUser = () => {
-  const { user, signOut } = useAuth();
+  const { user, updateUser, signOut } = useAuth();
   const formRef = useRef();
 
   const emailInputRef = useRef();
   const oldPasswordInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
+
+  const [avatar, setAvatar] = useState();
 
   const navigation = useNavigation();
 
@@ -88,7 +90,9 @@ const ProfileUser = () => {
           : {}),
       };
 
-      await api.put('/users', formData);
+      const response = await api.put('/users', formData);
+
+      updateUser(response.data);
 
       Alert.alert('Perfil atualizado com sucesso!');
 
@@ -99,7 +103,7 @@ const ProfileUser = () => {
         'Cheque os dados e tente novamente',
       );
     }
-  }, [navigation, user]);
+  }, [navigation, user, updateUser]);
 
   const handleUpdateAvatar = useCallback(() => {
     ImagePicker.showImagePicker(
@@ -109,30 +113,32 @@ const ProfileUser = () => {
         takePhotoButtonTitle: 'Usar camera',
         chooseFromLibraryButtonTitle: 'Escolher da galeria',
       },
-      response => {
+
+      async response => {
         if (response.didCancel) {
           return;
         }
 
         if (response.error) {
           Alert.alert('Erro ao atualizar seu avatar.');
-          return;
         }
-
+        setAvatar(response);
         const data = new FormData();
 
-        data.append('avatar', {
+        data.append('file', {
           type: 'image/jpeg',
           name: `${user.id}.jpg`,
           uri: response.uri,
         });
 
-        api.patch('users/avatar', data).then(res => {
-          console.log(res);
+        const image = await api.post('/files', data);
+
+        await api.put(`/users/avatar/${image.data.id}`).then(res => {
+          updateUser(res.data);
         });
       },
     );
-  }, [user.id]);
+  }, [user.id, updateUser]);
 
   return (
     <>
@@ -151,7 +157,9 @@ const ProfileUser = () => {
               <Icon name="chevron-left" size={24} color="#e2dcdc" />
             </BackButton>
             <UserAvatarButton onPress={handleUpdateAvatar}>
-              <UserAvatar source={{ uri: user.avatar.url }} />
+              <UserAvatar
+                source={{ uri: avatar ? avatar.uri : user.avatar.url }}
+              />
             </UserAvatarButton>
             <View>
               <Title>Meu perfil</Title>
