@@ -33,8 +33,8 @@ class AnimalController {
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      sex: Yup.string().required(),
-      type: Yup.string().required(),
+      sex: Yup.array().required(),
+      type: Yup.array().required(),
       detail: Yup.string().required(),
     });
 
@@ -53,17 +53,20 @@ class AnimalController {
 
     let avatar = 1;
 
-    if (type === 'Cachorro') {
+    if (type[0] === 'Cão') {
       avatar = 3;
     }
-    if (type === 'Gato') {
+    if (type[0] === 'Gato') {
       avatar = 4;
     }
 
+    const sexType = sex[0];
+    const genreType = type[0];
+
     const newAnimal = await Animal.create({
       name,
-      sex,
-      type,
+      sex: sexType,
+      type: genreType,
       detail,
       user_id: req.userId,
       institution_id: institution,
