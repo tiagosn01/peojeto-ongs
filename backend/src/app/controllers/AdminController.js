@@ -1,6 +1,7 @@
 import Admin from '../models/Admin';
 import User from '../models/User';
 import Institution from '../models/Institution';
+import File from '../models/File';
 
 class AdminController {
   async show(req, res) {
@@ -34,6 +35,20 @@ class AdminController {
 
     const list = await Admin.findAll({
       where: { institution_id: institution.id },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'avatar_id'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+      ],
     });
 
     return res.json(list);
@@ -71,22 +86,42 @@ class AdminController {
       institution_id: institution.id,
     });
 
-    return res.json(newAdmin);
+    await Admin.findByPk(newAdmin.id, {
+      attributes: ['email'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'avatar_id'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json();
   }
 
   async delete(req, res) {
     // Validação do owner
+    const { id } = req.params;
+
     const ownerExist = await Institution.findOne({
       where: { owner_id: req.userId },
     });
 
-    if (!ownerExist) {
+    if (!ownerExist || id === ownerExist.owner_id) {
       return res
         .status(401)
         .json({ error: 'Não autorizado, ou a instituição não existe.' });
     }
 
-    const admin = await Admin.findByPk(req.params.id);
+    const admin = await Admin.findByPk(id);
 
     await admin.destroy();
 

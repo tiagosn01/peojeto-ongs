@@ -117,7 +117,9 @@ class UserController {
 
     user.avatar_id = id;
 
-    await oldFile.destroy();
+    if (oldFile.id !== 1) {
+      await oldFile.destroy();
+    }
 
     await user.save();
 

@@ -51,6 +51,15 @@ class AnimalController {
     const { name, sex, type, detail } = req.body;
     const institution = admin.institution_id;
 
+    let avatar = 1;
+
+    if (type === 'Cachorro') {
+      avatar = 3;
+    }
+    if (type === 'Gato') {
+      avatar = 4;
+    }
+
     const newAnimal = await Animal.create({
       name,
       sex,
@@ -58,6 +67,7 @@ class AnimalController {
       detail,
       user_id: req.userId,
       institution_id: institution,
+      avatar_id: avatar,
     });
 
     return res.json(newAnimal);

@@ -61,33 +61,62 @@ class InstitutionController {
     // if (cached) {
     //   return res.json(cached);
     // }
+    try {
+      const admin = await Admin.findOne({
+        where: { user_id: req.userId },
+        attributes: ['id', 'email'],
+        include: [
+          {
+            model: Institution,
+            as: 'institution',
+            attributes: [
+              'id',
+              'name',
+              'email',
+              'street',
+              'city',
+              'state',
+              'detail',
+              'owner_id',
+            ],
+            include: [
+              {
+                model: File,
+                as: 'avatar',
+                attributes: ['name', 'path', 'url'],
+              },
+            ],
+          },
+        ],
+      });
 
-    const admin = await Admin.findAll({
-      where: { user_id: req.userId },
-      attributes: ['id', 'email'],
-      include: [
-        {
-          model: Institution,
-          as: 'institution',
-          attributes: ['id', 'name', 'email', 'city', 'state', 'detail'],
-          include: [
-            {
-              model: File,
-              as: 'avatar',
-              attributes: ['name', 'path', 'url'],
-            },
-          ],
-        },
-      ],
-    });
+      if (!admin) {
+        throw new Error(
+          'Erro na requisição. Somente o owner pode fazer alterações'
+        );
+      }
 
-    if (!admin) {
-      return res.status(401).json({ error: 'Não autorizado.' });
+      return res.json(admin);
+      // await Cache.set('providers', providers);
+    } catch (err) {
+      return console.log(err);
     }
+  }
 
-    // await Cache.set('providers', providers);
+  async owner(req, res) {
+    try {
+      const owner = await Institution.findOne({
+        where: { owner_id: req.userId },
+      });
 
-    return res.json(admin);
+      if (!owner) {
+        throw new Error('Acesso restrito ao criado da instituição.');
+      }
+
+      return res.json(owner);
+    } catch (err) {
+      throw new Error('Acesso restrito ao criado da instituição.');
+    }
   }
 
   async store(req, res) {
@@ -151,6 +180,42 @@ class InstitutionController {
     return res.json(newInstitution);
   }
 
+  async patch(req, res) {
+    const { id } = req.params;
+    const institution = await Institution.findOne({
+      where: { owner_id: req.userId },
+    });
+
+    if (!institution) {
+      return res.status(401).json('Não permitido');
+    }
+
+    const oldFile = await File.findOne({
+      where: { id: institution.avatar_id },
+    });
+
+    institution.avatar_id = id;
+
+    if (oldFile.id !== 2) {
+      await oldFile.destroy();
+    }
+
+    await institution.save();
+
+    const responseAvatar = await Institution.findByPk(institution.id, {
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json(responseAvatar);
+  }
+
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
@@ -177,25 +242,7 @@ class InstitutionController {
 
     institution.update(req.body);
 
-    const { id, name, email, avatar } = await Institution.findByPk(
-      institution.id,
-      {
-        include: [
-          {
-            model: File,
-            as: 'avatar',
-            attributes: ['id', 'path', 'url'],
-          },
-        ],
-      }
-    );
-
-    return res.json({
-      id,
-      name,
-      email,
-      avatar,
-    });
+    return res.json(institution);
   }
 
   async delete(req, res) {

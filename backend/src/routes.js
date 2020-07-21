@@ -24,14 +24,21 @@ routes.put('/forgot-password', AuthController.update);
 routes.use(authMiddleware);
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
-routes.put('/users/avatar/:id', UserController.patch);
+routes.patch('/users/avatar/:id', UserController.patch);
 
+// mostra instituição selecionada
 routes.get('/institution-show/:id', InstitutionController.display);
 
-routes.get('/institutions', InstitutionController.index);
+// mostra instituição somente para os admins no dashboard
 routes.get('/institutions-admin', InstitutionController.show);
+
+// mostra intituição para o owner
+routes.get('/institution-owner', InstitutionController.owner);
+
+routes.get('/institutions', InstitutionController.index);
 routes.post('/institutions', InstitutionController.store);
 routes.put('/institutions', InstitutionController.update);
+routes.patch('/institutions/avatar/:id', InstitutionController.patch);
 routes.delete('/institutions/:id', InstitutionController.delete);
 
 routes.get('/animals/:id', AnimalController.index);
@@ -41,8 +48,10 @@ routes.delete('/animals/:id', AnimalController.delete);
 
 routes.post('/adoptions', AdoptionController.store);
 
+// mostra botões de admins para cadastros
 routes.get('/isadmins/:id', AdminController.show);
 
+// mostra todos admins respectivos
 routes.get('/admins', AdminController.index);
 routes.post('/admins', AdminController.store);
 routes.delete('/admins/:id', AdminController.delete);
