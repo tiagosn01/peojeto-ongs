@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -37,9 +37,16 @@ const ProfileUser = () => {
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
 
+  const [institution, setInstitution] = useState();
   const [avatar, setAvatar] = useState();
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    api.get('/institution-owner').then(response => {
+      setInstitution(response.data);
+    });
+  }, []);
 
   const handleSignUp = useCallback(async () => {
     try {
@@ -133,7 +140,7 @@ const ProfileUser = () => {
 
         const image = await api.post('/files', data);
 
-        await api.put(`/users/avatar/${image.data.id}`).then(res => {
+        await api.patch(`/users/avatar/${image.data.id}`).then(res => {
           updateUser(res.data);
         });
       },
@@ -236,13 +243,25 @@ const ProfileUser = () => {
               </Button>
             </Form>
             <DrawView />
-            <Button
-              onPress={() => {
-                navigation.navigate('RegisterInstitution');
-              }}
-            >
-              Criar instituição
-            </Button>
+
+            {institution ? (
+              <Button
+                onPress={() => {
+                  navigation.navigate('ProfileInstitution');
+                }}
+              >
+                Editar perfil da instituição
+              </Button>
+            ) : (
+              <Button
+                onPress={() => {
+                  navigation.navigate('RegisterInstitution');
+                }}
+              >
+                Criar instituição
+              </Button>
+            )}
+
             <Button
               onPress={() => {
                 signOut();

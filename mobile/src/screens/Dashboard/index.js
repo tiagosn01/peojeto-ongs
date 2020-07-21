@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Alert } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import { ScrollView } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 import { useAuth } from '../../hooks/auth';
 
 import api from '../../services/api';
@@ -28,10 +28,22 @@ import {
 
 const Dashboard = () => {
   const [institutions, setInstitutions] = useState([]);
-  const [admins, setAdmins] = useState([]);
+  const [admins, setAdmins] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   const { user } = useAuth();
   const { navigate } = useNavigation();
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+
+    setTimeout(() => {
+      api.get('/institutions-admin').then(response => {
+        setAdmins(response.data.institution);
+      });
+    }, 1000);
+    setRefresh(false);
+  }, []);
 
   const navigateToAnimals = useCallback(
     institutionId => {
@@ -41,9 +53,16 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    api.get('/institutions-admin').then(response => {
-      setAdmins(response.data);
-    });
+    try {
+      api.get('/institutions-admin').then(response => {
+        setAdmins(response.data.institution);
+      });
+    } catch (err) {
+      Alert.alert(
+        'Erro ao carregar instituição',
+        'Erro ao carregar instituição do admin.',
+      );
+    }
   }, []);
 
   useEffect(() => {
@@ -69,40 +88,40 @@ const Dashboard = () => {
         </ProfileButton>
       </Header>
 
-      <ScrollView style={{ flex: 1 }}>
-        {admins &&
-          admins.map(item => (
-            <InstitutionAdmin key={item.institution.id}>
-              <ListsTitle>Sua instituição</ListsTitle>
-              <InstitutionContainer
-                onPress={() => navigateToAnimals(item.institution.id)}
-              >
-                <InstitutionAvatar
-                  source={{ uri: item.institution.avatar.url }}
-                />
+      <ScrollView
+        style={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+        }
+      >
+        {admins ? (
+          <InstitutionAdmin>
+            <ListsTitle>Sua instituição</ListsTitle>
+            <InstitutionContainer onPress={() => navigateToAnimals(admins.id)}>
+              {admins.avatar && (
+                <InstitutionAvatar source={{ uri: admins.avatar.url }} />
+              )}
 
-                <InstitutionInfo>
-                  <InstitutionName>{item.institution.name}</InstitutionName>
+              <InstitutionInfo>
+                <InstitutionName>{admins.name}</InstitutionName>
 
-                  <InstitutionDetail>
-                    <Icon name="map-pin" size={14} color="#ff9000" />
-                    <InstitutionDetailText>
-                      {item.institution.city} - {item.institution.state}
-                    </InstitutionDetailText>
-                  </InstitutionDetail>
+                <InstitutionDetail>
+                  <Icon name="map-pin" size={14} color="#ff9000" />
+                  <InstitutionDetailText>
+                    {admins.city} - {admins.state}
+                  </InstitutionDetailText>
+                </InstitutionDetail>
 
-                  <InstitutionDetail>
-                    <Icon name="mail" size={14} color="#ff9000" />
-                    <InstitutionDetailText>
-                      {item.institution.email}
-                    </InstitutionDetailText>
-                  </InstitutionDetail>
-                </InstitutionInfo>
-              </InstitutionContainer>
-            </InstitutionAdmin>
-          ))}
+                <InstitutionDetail>
+                  <Icon name="mail" size={14} color="#ff9000" />
+                  <InstitutionDetailText>{admins.email}</InstitutionDetailText>
+                </InstitutionDetail>
+              </InstitutionInfo>
+            </InstitutionContainer>
+          </InstitutionAdmin>
+        ) : null}
 
-        {admins.length > 0 && <DrawView />}
+        {admins && <DrawView />}
         <InstitutionTitle>Instituições</InstitutionTitle>
 
         {institutions &&

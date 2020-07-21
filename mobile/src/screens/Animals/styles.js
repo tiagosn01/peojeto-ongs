@@ -37,7 +37,7 @@ export const UserAvatar = styled.Image`
 export const InstitutionContainer = styled.View`
   background: #416e4b;
   border-radius: 10px;
-  padding: 26px 24px;
+  padding: 26px 14px;
   margin-top: 28px;
   margin-bottom: 10px;
   flex-direction: column;
@@ -70,7 +70,7 @@ export const InstitutionDetail = styled.View`
 `;
 
 export const InstitutionDetailText = styled.Text`
-  margin-left: 8px;
+  margin: 0 12px;
   color: #d5ccb3;
 `;
 
@@ -98,7 +98,7 @@ export const InstitutionTitle = styled.Text`
 export const AnimalContainer = styled.TouchableOpacity`
   background: #416e4b;
   border-radius: 10px;
-  padding: 26px 24px;
+  padding: 18px 16px;
   margin-bottom: 10px;
   flex-direction: row;
   align-items: center;
@@ -106,9 +106,15 @@ export const AnimalContainer = styled.TouchableOpacity`
 
 export const AnimalName = styled.Text`
   font-family: 'RobotoSlab-Medium';
-  margin-bottom: 8px;
+  margin-left: 16px;
+  margin-bottom: 2px;
   font-size: 18px;
   color: #e2dcdc;
+`;
+
+export const AnimalDetailText = styled.Text`
+  margin: 0 16px;
+  color: #d5ccb3;
 `;
 
 export const DrawView = styled.View`
@@ -120,4 +126,11 @@ export const DrawView = styled.View`
 
 export const ContainerButton = styled.View`
   padding: 10px 24px;
+`;
+
+export const DrawVertical = styled.View`
+  border-left-color: gray;
+  border-left-width: 1px;
+  width: 2px;
+  height: 70px;
 `;

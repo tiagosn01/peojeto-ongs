@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from 'react';
 import {
-  Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -11,22 +10,32 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
-
 import Icon from 'react-native-vector-icons/Feather';
-import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 
-import logoImg from '../../assets/logo.png';
+import api from '../../services/api';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
-import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
+import {
+  Container,
+  BackButton,
+  Title,
+  ProfileButton,
+  UserAvatar,
+  Header,
+  HeaderText,
+} from './styles';
 
-const RegisterAnimal = () => {
+const RegisterInstitution = () => {
+  const { user } = useAuth();
   const formRef = useRef();
 
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+  const sexInputRef = useRef();
+  const typeInputRef = useRef();
+  const situationInputRef = useRef();
+  const detailInputRef = useRef();
 
   const navigation = useNavigation();
 
@@ -40,20 +49,21 @@ const RegisterAnimal = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um email válido obrigatório'),
-          password: Yup.string().min(6, 'No mínimo 6 digitos.'),
+          type: Yup.string().required('Endereço obrigatório'),
+          situation: Yup.string().required('Cidade obrigatória'),
+          state: Yup.string().required('Estado obrigatório'),
+          detail: Yup.string().required('Detalhes obrigatório'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('/users', data);
+        await api.post('/institutions', data);
 
-        Alert.alert(
-          'Cadastro realizado com sucesso! Você ja pode fazer login na aplicação.',
-        );
+        Alert.alert('Cadastro da instituição realizado com sucesso!');
 
-        navigation.goBack();
+        navigation.navigate('ProfileInstitution');
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
@@ -63,6 +73,7 @@ const RegisterAnimal = () => {
     },
     [navigation],
   );
+
   return (
     <>
       <KeyboardAvoidingView
@@ -70,51 +81,90 @@ const RegisterAnimal = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled
       >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
+        <Header>
+          <BackButton
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="chevron-left" size={24} color="#e2dcdc" />
+          </BackButton>
+          <HeaderText>Voltar</HeaderText>
+
+          <ProfileButton
+            onPress={() => {
+              navigation.navigate('ProfileUser');
+            }}
+          >
+            <UserAvatar source={{ uri: user.avatar.url }} />
+          </ProfileButton>
+        </Header>
+
+        <ScrollView keyboardShouldPersistTaps="handled">
           <Container>
-            <Image source={logoImg} />
             <View>
-              <Title>Crie sua conta</Title>
+              <Title>Cadastrar animal</Title>
             </View>
+
             <Form onSubmit={handleSignUp} ref={formRef}>
               <Input
                 name="name"
-                icon="user"
-                placeholder="Digite seu Nome"
+                icon="chevrons-right"
+                placeholder="Nome"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
-                  emailInputRef.current.focus();
+                  sexInputRef.current.focus();
                 }}
               />
 
               <Input
-                ref={emailInputRef}
-                name="email"
-                icon="mail"
-                keyboardType="email-address"
+                ref={sexInputRef}
+                name="sex"
+                icon="chevrons-right"
                 autoCorrect={false}
                 autoCapitalize="none"
-                placeholder="Digite seu e-mail"
+                placeholder="Sexo"
                 returnKeyType="next"
                 onSubmitEditing={() => {
-                  passwordInputRef.current.focus();
+                  typeInputRef.current.focus();
                 }}
               />
+
               <Input
-                ref={passwordInputRef}
-                name="password"
-                icon="lock"
-                secureTextEntry
-                placeholder="Digite sua senha"
-                textContentType="newPassword"
+                ref={typeInputRef}
+                name="type"
+                icon="chevrons-right"
+                placeholder="Endereço"
+                returnKeyType="next"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  situationInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                ref={situationInputRef}
+                name="situation"
+                icon="chevrons-right"
+                placeholder="Cidade"
+                returnKeyType="next"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  detailInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                ref={detailInputRef}
+                name="detail"
+                icon="chevrons-right"
+                placeholder="Detalhes"
                 onSubmitEditing={() => {
                   formRef.current.submitForm();
                 }}
               />
+
               <Button
                 onPress={() => {
                   formRef.current.submitForm();
@@ -126,13 +176,8 @@ const RegisterAnimal = () => {
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <BackToSignIn onPress={() => navigation.goBack()}>
-        <Icon name="log-in" size={20} color="#fff" />
-        <BackToSignInText>Voltar para login</BackToSignInText>
-      </BackToSignIn>
     </>
   );
 };
 
-export default RegisterAnimal;
+export default RegisterInstitution;

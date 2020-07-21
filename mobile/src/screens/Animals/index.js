@@ -26,8 +26,10 @@ import {
   InstitutionTitle,
   AnimalContainer,
   AnimalName,
+  AnimalDetailText,
   DrawView,
   ContainerButton,
+  DrawVertical,
 } from './styles';
 
 const Dashboard = () => {
@@ -184,17 +186,12 @@ const Dashboard = () => {
                   <AnimalName>{animal.name}</AnimalName>
 
                   <InstitutionDetail>
-                    <Icon
-                      style={{ marginBottom: 10 }}
-                      name="align-justify"
-                      size={18}
-                      color="#ff9000"
-                    />
-                    <InstitutionDetailText>
+                    <DrawVertical />
+                    <AnimalDetailText>
                       {animal.type} {'\n'}
                       {animal.sex} {'\n'}
                       {animal.detail}
-                    </InstitutionDetailText>
+                    </AnimalDetailText>
                   </InstitutionDetail>
                 </InstitutionInfo>
               </AnimalContainer>
