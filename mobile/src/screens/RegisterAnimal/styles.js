@@ -41,7 +41,7 @@ export const Title = styled.Text`
   font-size: 24px;
   color: #fff;
   font-family: 'RobotoSlab-Medium';
-  margin: 32px 0 64px;
+  margin: 32px 0 54px;
 `;
 
 export const InstitutionContainer = styled.View`
@@ -103,6 +103,14 @@ export const InstitutionTitle = styled.Text`
   margin-top: 24px;
   margin-bottom: 10px;
   padding: 0 24px 0;
+`;
+
+export const CheckboxText = styled.Text`
+  font-family: 'RobotoSlab-Regular';
+  font-size: 20px;
+  color: #e2dcdc;
+  margin-top: 14px;
+  margin-bottom: 10px;
 `;
 
 export const AnimalContainer = styled.TouchableOpacity`

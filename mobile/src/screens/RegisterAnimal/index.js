@@ -17,6 +17,7 @@ import api from '../../services/api';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import Checkbox from '../../components/Checkbox';
 
 import {
   Container,
@@ -26,32 +27,37 @@ import {
   UserAvatar,
   Header,
   HeaderText,
+  CheckboxText,
 } from './styles';
 
-const RegisterInstitution = () => {
+const RegisterAnimal = () => {
   const { user } = useAuth();
   const formRef = useRef();
 
   const sexInputRef = useRef();
-  const typeInputRef = useRef();
-  const situationInputRef = useRef();
   const detailInputRef = useRef();
 
   const navigation = useNavigation();
 
-  const handleSignUp = useCallback(
+  const checkboxOptions1 = [
+    { value: 'Cão', label: 'Cão' },
+    { value: 'Gato', label: 'Gato' },
+  ];
+
+  const checkboxOptions2 = [
+    { value: 'Macho', label: 'Macho' },
+    { value: 'Fêmea', label: 'Fêmea' },
+  ];
+
+  const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
 
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um email válido obrigatório'),
-          type: Yup.string().required('Endereço obrigatório'),
-          situation: Yup.string().required('Cidade obrigatória'),
-          state: Yup.string().required('Estado obrigatório'),
+          sex: Yup.array().required('E-mail obrigatório'),
+          type: Yup.array().required('Endereço obrigatório'),
           detail: Yup.string().required('Detalhes obrigatório'),
         });
 
@@ -59,11 +65,11 @@ const RegisterInstitution = () => {
           abortEarly: false,
         });
 
-        await api.post('/institutions', data);
+        await api.post('/animals', data);
 
-        Alert.alert('Cadastro da instituição realizado com sucesso!');
+        Alert.alert('Cadastro do animal realizado com sucesso!');
 
-        navigation.navigate('ProfileInstitution');
+        navigation.navigate('ProfileAnimal');
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
@@ -106,7 +112,17 @@ const RegisterInstitution = () => {
               <Title>Cadastrar animal</Title>
             </View>
 
-            <Form onSubmit={handleSignUp} ref={formRef}>
+            <Form onSubmit={handleSubmit} ref={formRef}>
+              <CheckboxText>Biotipo:</CheckboxText>
+              <View style={{ flexDirection: 'row' }}>
+                <Checkbox name="type" options={checkboxOptions1} />
+              </View>
+
+              <CheckboxText>Sexo:</CheckboxText>
+              <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+                <Checkbox name="sex" options={checkboxOptions2} />
+              </View>
+
               <Input
                 name="name"
                 icon="chevrons-right"
@@ -115,43 +131,6 @@ const RegisterInstitution = () => {
                 autoCapitalize="words"
                 onSubmitEditing={() => {
                   sexInputRef.current.focus();
-                }}
-              />
-
-              <Input
-                ref={sexInputRef}
-                name="sex"
-                icon="chevrons-right"
-                autoCorrect={false}
-                autoCapitalize="none"
-                placeholder="Sexo"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  typeInputRef.current.focus();
-                }}
-              />
-
-              <Input
-                ref={typeInputRef}
-                name="type"
-                icon="chevrons-right"
-                placeholder="Endereço"
-                returnKeyType="next"
-                autoCapitalize="words"
-                onSubmitEditing={() => {
-                  situationInputRef.current.focus();
-                }}
-              />
-
-              <Input
-                ref={situationInputRef}
-                name="situation"
-                icon="chevrons-right"
-                placeholder="Cidade"
-                returnKeyType="next"
-                autoCapitalize="words"
-                onSubmitEditing={() => {
-                  detailInputRef.current.focus();
                 }}
               />
 
@@ -180,4 +159,4 @@ const RegisterInstitution = () => {
   );
 };
 
-export default RegisterInstitution;
+export default RegisterAnimal;

@@ -1,34 +1,63 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import {
-  Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  View,
   Alert,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
 
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
 
-import logoImg from '../../assets/logo.png';
-
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
-import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
+import {
+  Container,
+  BackButton,
+  Title,
+  AnimalItem,
+  AnimalContainer,
+  AnimalInfo,
+  AnimalName,
+  AnimalAvatar,
+  AnimalDetail,
+  AnimalDetailText,
+  DrawView,
+  DrawVertical,
+} from './styles';
 
 const RegisterAdoption = () => {
+  const route = useRoute();
+  const { institutionId } = route.params;
+
   const formRef = useRef();
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
   const navigation = useNavigation();
+  const [animals, setAnimals] = useState([]);
+
+  const [selectedAnimal, setSelectedAnimal] = useState({});
+
+  useEffect(() => {
+    api.get(`/animals/${institutionId}`).then(response => {
+      setAnimals(response.data);
+    });
+  }, [institutionId]);
+
+  const handleResetSelect = () => {
+    setSelectedAnimal({});
+  };
+
+  const handleSelectAnimal = animal => {
+    setSelectedAnimal(animal);
+  };
 
   const handleSignUp = useCallback(
     async data => {
@@ -63,6 +92,7 @@ const RegisterAdoption = () => {
     },
     [navigation],
   );
+
   return (
     <>
       <KeyboardAvoidingView
@@ -70,20 +100,82 @@ const RegisterAdoption = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled
       >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
+        <ScrollView style={{ flex: 1 }}>
           <Container>
-            <Image source={logoImg} />
-            <View>
-              <Title>Crie sua conta</Title>
-            </View>
+            <BackButton
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Icon name="chevron-left" size={24} color="#e2dcdc" />
+            </BackButton>
+
+            <Title>Escolha o animal</Title>
+            <ScrollView
+              style={{ maxHeight: 400 }}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
+            >
+              {selectedAnimal.name ? (
+                <AnimalItem key={selectedAnimal.id}>
+                  <AnimalContainer onPress={() => handleSelectAnimal()}>
+                    <AnimalAvatar source={{ uri: selectedAnimal.avatar.url }} />
+
+                    <AnimalInfo>
+                      <AnimalName>{selectedAnimal.name}</AnimalName>
+
+                      <AnimalDetail>
+                        <DrawVertical />
+                        <AnimalDetailText>
+                          {selectedAnimal.type} {'\n'}
+                          {selectedAnimal.sex} {'\n'}
+                          {selectedAnimal.detail}
+                        </AnimalDetailText>
+                      </AnimalDetail>
+                    </AnimalInfo>
+                  </AnimalContainer>
+                </AnimalItem>
+              ) : (
+                animals &&
+                animals.map(animal => (
+                  <AnimalItem key={animal.id}>
+                    <AnimalContainer onPress={() => handleSelectAnimal(animal)}>
+                      <AnimalAvatar source={{ uri: animal.avatar.url }} />
+
+                      <AnimalInfo>
+                        <AnimalName>{animal.name}</AnimalName>
+
+                        <AnimalDetail>
+                          <DrawVertical />
+                          <AnimalDetailText>
+                            {animal.type} {'\n'}
+                            {animal.sex} {'\n'}
+                            {animal.detail}
+                          </AnimalDetailText>
+                        </AnimalDetail>
+                      </AnimalInfo>
+                    </AnimalContainer>
+                  </AnimalItem>
+                ))
+              )}
+            </ScrollView>
+            <Button
+              onPress={() => {
+                handleResetSelect();
+              }}
+            >
+              Escolher outro
+            </Button>
+
+            <DrawView />
+
             <Form onSubmit={handleSignUp} ref={formRef}>
+              <Title>Dados do responsável</Title>
+
               <Input
                 name="name"
                 icon="user"
-                placeholder="Digite seu Nome"
+                placeholder="Nome"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
@@ -98,23 +190,23 @@ const RegisterAdoption = () => {
                 keyboardType="email-address"
                 autoCorrect={false}
                 autoCapitalize="none"
-                placeholder="Digite seu e-mail"
+                placeholder="E-mail"
                 returnKeyType="next"
                 onSubmitEditing={() => {
                   passwordInputRef.current.focus();
                 }}
               />
               <Input
-                ref={passwordInputRef}
-                name="password"
-                icon="lock"
-                secureTextEntry
-                placeholder="Digite sua senha"
-                textContentType="newPassword"
+                name="cpf"
+                icon="user"
+                placeholder="CPF (opcional)"
+                returnKeyType="next"
+                autoCapitalize="words"
                 onSubmitEditing={() => {
-                  formRef.current.submitForm();
+                  emailInputRef.current.focus();
                 }}
               />
+
               <Button
                 onPress={() => {
                   formRef.current.submitForm();
@@ -126,11 +218,6 @@ const RegisterAdoption = () => {
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <BackToSignIn onPress={() => navigation.goBack()}>
-        <Icon name="log-in" size={20} color="#fff" />
-        <BackToSignInText>Voltar para login</BackToSignInText>
-      </BackToSignIn>
     </>
   );
 };

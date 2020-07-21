@@ -43,6 +43,10 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { navigate, goBack } = useNavigation();
 
+  const navigateToRegisterAdoption = useCallback(() => {
+    navigate('RegisterAdoption', { institutionId });
+  }, [institutionId, navigate]);
+
   const navigateToProfileAnimal = useCallback(
     animalId => {
       navigate('ProfileAnimal', { animalId });
@@ -155,7 +159,7 @@ const Dashboard = () => {
             <Button
               title="adoption-register"
               onPress={() => {
-                navigate('RegisterAdoption');
+                navigateToRegisterAdoption();
               }}
             >
               Cadastrar Adoção
