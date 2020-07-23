@@ -16,6 +16,10 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      cnpj: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       street: {
         type: Sequelize.STRING,
         allowNull: true,

@@ -19,9 +19,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      photos: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       situation: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
+      },
+      available: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,

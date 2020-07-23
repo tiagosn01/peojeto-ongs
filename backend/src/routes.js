@@ -41,12 +41,13 @@ routes.put('/institutions', InstitutionController.update);
 routes.patch('/institutions/avatar/:id', InstitutionController.patch);
 routes.delete('/institutions/:id', InstitutionController.delete);
 
+routes.get('/animals-show/:id', AnimalController.show);
 routes.get('/animals/:id', AnimalController.index);
 routes.post('/animals', AnimalController.store);
 routes.put('/animals/:id', AnimalController.update);
 routes.delete('/animals/:id', AnimalController.delete);
 
-routes.post('/adoptions', AdoptionController.store);
+routes.post('/adoptions/:id', AdoptionController.store);
 
 // mostra botões de admins para cadastros
 routes.get('/isadmins/:id', AdminController.show);

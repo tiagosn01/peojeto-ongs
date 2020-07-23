@@ -5,14 +5,42 @@ import File from '../models/File';
 import Admin from '../models/Admin';
 
 class AnimalController {
+  async show(req, res) {
+    const { id } = req.params;
+
+    const animal = await Animal.findByPk(id, {
+      attributes: ['id', 'name', 'sex', 'type', 'detail'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
+    });
+
+    // await Cache.set('providers', providers);
+
+    return res.json(animal);
+  }
+
   async index(req, res) {
     const { id } = req.params;
+
     const listAnimals = await Animal.findAll({
       where: {
         institution_id: id,
         situation: false,
       },
-      attributes: ['id', 'name', 'sex', 'type', 'detail'],
+      attributes: [
+        'id',
+        'name',
+        'sex',
+        'type',
+        'detail',
+        'institution_id',
+        'available',
+      ],
       include: [
         {
           model: User,
@@ -48,7 +76,7 @@ class AnimalController {
       return res.status(401).json({ error: 'Não autorizado.' });
     }
 
-    const { name, sex, type, detail } = req.body;
+    const { name, sex, type, photos, detail, available } = req.body;
     const institution = admin.institution_id;
 
     let avatar = 1;
@@ -62,11 +90,14 @@ class AnimalController {
 
     const sexType = sex[0];
     const genreType = type[0];
+    const availableType = available[0];
 
     const newAnimal = await Animal.create({
       name,
       sex: sexType,
       type: genreType,
+      photos,
+      available: availableType,
       detail,
       user_id: req.userId,
       institution_id: institution,

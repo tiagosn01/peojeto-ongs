@@ -8,6 +8,9 @@ class Animal extends Model {
         sex: Sequelize.STRING,
         type: Sequelize.STRING,
         detail: Sequelize.STRING,
+        photos: Sequelize.STRING,
+        situation: Sequelize.BOOLEAN,
+        available: Sequelize.BOOLEAN,
       },
       {
         sequelize,
