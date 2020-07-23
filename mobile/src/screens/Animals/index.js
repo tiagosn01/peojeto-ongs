@@ -176,31 +176,62 @@ const Dashboard = () => {
         )}
 
         {institution && <DrawView />}
-        <InstitutionTitle>Animais</InstitutionTitle>
+
+        <InstitutionTitle>Disponíveis para adoção</InstitutionTitle>
 
         {animals &&
-          animals.map(animal => (
-            <InstitutionAdmin key={animal.id}>
-              <AnimalContainer
-                onPress={() => navigateToProfileAnimal(animal.id)}
-              >
-                <InstitutionAvatar source={{ uri: animal.avatar.url }} />
+          animals.map(animal =>
+            animal.available ? (
+              <InstitutionAdmin key={animal.id}>
+                <AnimalContainer
+                  onPress={() => navigateToProfileAnimal(animal.id)}
+                >
+                  <InstitutionAvatar source={{ uri: animal.avatar.url }} />
 
-                <InstitutionInfo>
-                  <AnimalName>{animal.name}</AnimalName>
+                  <InstitutionInfo>
+                    <AnimalName>{animal.name}</AnimalName>
 
-                  <InstitutionDetail>
-                    <DrawVertical />
-                    <AnimalDetailText>
-                      {animal.type} {'\n'}
-                      {animal.sex} {'\n'}
-                      {animal.detail}
-                    </AnimalDetailText>
-                  </InstitutionDetail>
-                </InstitutionInfo>
-              </AnimalContainer>
-            </InstitutionAdmin>
-          ))}
+                    <InstitutionDetail>
+                      <DrawVertical />
+                      <AnimalDetailText>
+                        {animal.type} {'\n'}
+                        {animal.sex} {'\n'}
+                        {animal.detail}
+                      </AnimalDetailText>
+                    </InstitutionDetail>
+                  </InstitutionInfo>
+                </AnimalContainer>
+              </InstitutionAdmin>
+            ) : null,
+          )}
+
+        <InstitutionTitle>Em tratamento</InstitutionTitle>
+
+        {animals &&
+          animals.map(animal =>
+            animal.available ? null : (
+              <InstitutionAdmin key={animal.id}>
+                <AnimalContainer
+                  onPress={() => navigateToProfileAnimal(animal.id)}
+                >
+                  <InstitutionAvatar source={{ uri: animal.avatar.url }} />
+
+                  <InstitutionInfo>
+                    <AnimalName>{animal.name}</AnimalName>
+
+                    <InstitutionDetail>
+                      <DrawVertical />
+                      <AnimalDetailText>
+                        {animal.type} {'\n'}
+                        {animal.sex} {'\n'}
+                        {animal.detail}
+                      </AnimalDetailText>
+                    </InstitutionDetail>
+                  </InstitutionInfo>
+                </AnimalContainer>
+              </InstitutionAdmin>
+            ),
+          )}
       </ScrollView>
     </Container>
   );

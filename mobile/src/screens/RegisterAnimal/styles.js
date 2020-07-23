@@ -41,7 +41,7 @@ export const Title = styled.Text`
   font-size: 24px;
   color: #fff;
   font-family: 'RobotoSlab-Medium';
-  margin: 32px 0 54px;
+  margin: 32px 0 34px;
 `;
 
 export const InstitutionContainer = styled.View`

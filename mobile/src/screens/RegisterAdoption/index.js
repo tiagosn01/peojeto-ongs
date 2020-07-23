@@ -38,9 +38,9 @@ const RegisterAdoption = () => {
   const formRef = useRef();
 
   const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+  const cpfInputRef = useRef();
 
-  const navigation = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const [animals, setAnimals] = useState([]);
 
   const [selectedAnimal, setSelectedAnimal] = useState({});
@@ -59,38 +59,40 @@ const RegisterAdoption = () => {
     setSelectedAnimal(animal);
   };
 
+  const navigateToAnimals = useCallback(
+    animalId => {
+      navigate('Animals', { animalId });
+    },
+    [navigate],
+  );
+
   const handleSignUp = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
 
+        setSelectedAnimal(selectedAnimal);
+
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um email válido obrigatório'),
-          password: Yup.string().min(6, 'No mínimo 6 digitos.'),
+          email: Yup.string().required('E-mail obrigatório'),
+          cpf: Yup.string().min(2, 'No mínimo 6 digitos.'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('/users', data);
+        await api.post(`/adoptions/${selectedAnimal.id}`, data);
 
-        Alert.alert(
-          'Cadastro realizado com sucesso! Você ja pode fazer login na aplicação.',
-        );
+        Alert.alert('Adoção cadastrada com sucesso.');
 
-        navigation.goBack();
+        navigateToAnimals(selectedAnimal.id);
       } catch (err) {
-        Alert.alert(
-          'Erro no cadastro',
-          'Ocorreu um erro ao fazer o cadastro, cheque os dados e tente novamente',
-        );
+        Alert.alert('Erro no cadastro', 'Cheque os dados e tente novamente');
       }
     },
-    [navigation],
+    [selectedAnimal, navigateToAnimals],
   );
 
   return (
@@ -104,7 +106,7 @@ const RegisterAdoption = () => {
           <Container>
             <BackButton
               onPress={() => {
-                navigation.goBack();
+                goBack();
               }}
             >
               <Icon name="chevron-left" size={24} color="#e2dcdc" />
@@ -118,7 +120,7 @@ const RegisterAdoption = () => {
             >
               {selectedAnimal.name ? (
                 <AnimalItem key={selectedAnimal.id}>
-                  <AnimalContainer onPress={() => handleSelectAnimal()}>
+                  <AnimalContainer>
                     <AnimalAvatar source={{ uri: selectedAnimal.avatar.url }} />
 
                     <AnimalInfo>
@@ -137,26 +139,30 @@ const RegisterAdoption = () => {
                 </AnimalItem>
               ) : (
                 animals &&
-                animals.map(animal => (
-                  <AnimalItem key={animal.id}>
-                    <AnimalContainer onPress={() => handleSelectAnimal(animal)}>
-                      <AnimalAvatar source={{ uri: animal.avatar.url }} />
+                animals.map(animal =>
+                  animal.available ? (
+                    <AnimalItem key={animal.id}>
+                      <AnimalContainer
+                        onPress={() => handleSelectAnimal(animal)}
+                      >
+                        <AnimalAvatar source={{ uri: animal.avatar.url }} />
 
-                      <AnimalInfo>
-                        <AnimalName>{animal.name}</AnimalName>
+                        <AnimalInfo>
+                          <AnimalName>{animal.name}</AnimalName>
 
-                        <AnimalDetail>
-                          <DrawVertical />
-                          <AnimalDetailText>
-                            {animal.type} {'\n'}
-                            {animal.sex} {'\n'}
-                            {animal.detail}
-                          </AnimalDetailText>
-                        </AnimalDetail>
-                      </AnimalInfo>
-                    </AnimalContainer>
-                  </AnimalItem>
-                ))
+                          <AnimalDetail>
+                            <DrawVertical />
+                            <AnimalDetailText>
+                              {animal.type} {'\n'}
+                              {animal.sex} {'\n'}
+                              {animal.detail}
+                            </AnimalDetailText>
+                          </AnimalDetail>
+                        </AnimalInfo>
+                      </AnimalContainer>
+                    </AnimalItem>
+                  ) : null,
+                )
               )}
             </ScrollView>
             <Button
@@ -193,17 +199,17 @@ const RegisterAdoption = () => {
                 placeholder="E-mail"
                 returnKeyType="next"
                 onSubmitEditing={() => {
-                  passwordInputRef.current.focus();
+                  cpfInputRef.current.focus();
                 }}
               />
               <Input
+                ref={cpfInputRef}
                 name="cpf"
                 icon="user"
                 placeholder="CPF (opcional)"
-                returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
-                  emailInputRef.current.focus();
+                  formRef.current.submitForm();
                 }}
               />
 

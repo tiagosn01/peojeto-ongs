@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -34,6 +34,8 @@ const RegisterAnimal = () => {
   const { user } = useAuth();
   const formRef = useRef();
 
+  const [animalId, setAnimalId] = useState(0);
+
   const sexInputRef = useRef();
   const detailInputRef = useRef();
 
@@ -47,6 +49,11 @@ const RegisterAnimal = () => {
   const checkboxOptions2 = [
     { value: 'Macho', label: 'Macho' },
     { value: 'Fêmea', label: 'Fêmea' },
+  ];
+
+  const checkboxOptions3 = [
+    { value: 'true', label: 'Disponível para adoção' },
+    { value: 'false', label: 'Em tratamento' },
   ];
 
   const handleSubmit = useCallback(
@@ -65,11 +72,13 @@ const RegisterAnimal = () => {
           abortEarly: false,
         });
 
-        await api.post('/animals', data);
+        await api
+          .post('/animals', data)
+          .then(response => setAnimalId(response.id));
 
         Alert.alert('Cadastro do animal realizado com sucesso!');
 
-        navigation.navigate('ProfileAnimal');
+        navigation.navigate('ProfileAnimal', { animalId });
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
@@ -77,7 +86,7 @@ const RegisterAnimal = () => {
         );
       }
     },
-    [navigation],
+    [navigation, animalId],
   );
 
   return (
@@ -113,20 +122,36 @@ const RegisterAnimal = () => {
             </View>
 
             <Form onSubmit={handleSubmit} ref={formRef}>
-              <CheckboxText>Biotipo:</CheckboxText>
+              <CheckboxText>Espécie:</CheckboxText>
               <View style={{ flexDirection: 'row' }}>
                 <Checkbox name="type" options={checkboxOptions1} />
               </View>
 
               <CheckboxText>Sexo:</CheckboxText>
-              <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+              <View style={{ flexDirection: 'row' }}>
                 <Checkbox name="sex" options={checkboxOptions2} />
+              </View>
+
+              <CheckboxText>Status do animal:</CheckboxText>
+              <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+                <Checkbox name="available" options={checkboxOptions3} />
               </View>
 
               <Input
                 name="name"
                 icon="chevrons-right"
                 placeholder="Nome"
+                returnKeyType="next"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  sexInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                name="photos"
+                icon="chevrons-right"
+                placeholder="Link para fotos do animal"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {

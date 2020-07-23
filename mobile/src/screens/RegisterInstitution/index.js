@@ -33,6 +33,7 @@ const RegisterInstitution = () => {
   const formRef = useRef();
 
   const emailInputRef = useRef();
+  const cnpjInputRef = useRef();
   const streetInputRef = useRef();
   const cityInputRef = useRef();
   const stateInputRef = useRef();
@@ -128,6 +129,18 @@ const RegisterInstitution = () => {
                 autoCapitalize="none"
                 placeholder="E-mail"
                 returnKeyType="next"
+                onSubmitEditing={() => {
+                  cnpjInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                ref={cnpjInputRef}
+                name="cnpj"
+                icon="chevrons-right"
+                placeholder="CNPJ (opcional)"
+                returnKeyType="next"
+                autoCapitalize="words"
                 onSubmitEditing={() => {
                   streetInputRef.current.focus();
                 }}

@@ -161,7 +161,9 @@ const RegisterInstitution = () => {
       try {
         await api.post('/admins', data);
         setListAdmins(listAdmins + 1);
+
         formRefAdmin.current.reset();
+
         return Alert.alert('Admin cadastrado com sucesso!');
       } catch (err) {
         return Alert.alert('Erro!', 'Usuário ja cadastrado ou inexistente.');
