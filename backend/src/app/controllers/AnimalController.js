@@ -9,7 +9,7 @@ class AnimalController {
     const { id } = req.params;
 
     const animal = await Animal.findByPk(id, {
-      attributes: ['id', 'name', 'sex', 'type', 'detail'],
+      attributes: ['id', 'name', 'sex', 'type', 'detail', 'photos'],
       include: [
         {
           model: File,
@@ -77,6 +77,7 @@ class AnimalController {
     }
 
     const { name, sex, type, photos, detail, available } = req.body;
+
     const institution = admin.institution_id;
 
     let avatar = 1;
@@ -111,7 +112,7 @@ class AnimalController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       sex: Yup.string(),
-      type: Yup.string(),
+      photos: Yup.string(),
       detail: Yup.string(),
     });
 
@@ -132,9 +133,56 @@ class AnimalController {
       return res.status(401).json({ error: 'Não autorizado.' });
     }
 
+    const { available } = req.body;
+
+    if (available[0] === 'false') {
+      animal.available = false;
+    }
+    if (available[0] === 'true') {
+      animal.available = true;
+    }
+
+    delete req.body.available;
+
+    await animal.save();
     await animal.update(req.body);
 
     return res.json(animal);
+  }
+
+  async patch(req, res) {
+    const { id } = req.params;
+    const { animalId } = req.body;
+    const animal = await Animal.findByPk(animalId);
+
+    if (!animal) {
+      return res.status(401).json('Não permitido');
+    }
+
+    const oldFile = await File.findOne({
+      where: { id: animal.avatar_id },
+    });
+
+    animal.avatar_id = id;
+
+    if (oldFile.id !== 3 && oldFile.id !== 4) {
+      await oldFile.destroy();
+    }
+
+    await animal.save();
+
+    const responseAvatar = await Animal.findByPk(animal.id, {
+      attributes: ['id', 'name'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json(responseAvatar);
   }
 
   async delete(req, res) {

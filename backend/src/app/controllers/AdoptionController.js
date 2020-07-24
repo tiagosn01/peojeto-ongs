@@ -6,6 +6,31 @@ import Admin from '../models/Admin';
 import User from '../models/User';
 
 class AdoptionController {
+  async index(req, res) {
+    const { id } = req.params;
+
+    const listAdoptions = await Adoption.findAll({
+      where: {
+        institution_id: id,
+      },
+      attributes: ['id', 'name', 'email', 'cpf', 'voluntary', 'created_at'],
+      include: [
+        {
+          model: Animal,
+          as: 'animal',
+          attributes: ['name'],
+        },
+        {
+          model: Institution,
+          as: 'institution',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    return res.json(listAdoptions);
+  }
+
   async store(req, res) {
     const { id } = req.params;
 

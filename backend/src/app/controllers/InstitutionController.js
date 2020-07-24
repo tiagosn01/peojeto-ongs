@@ -99,7 +99,9 @@ class InstitutionController {
       return res.json(admin);
       // await Cache.set('providers', providers);
     } catch (err) {
-      return console.log(err);
+      throw new Error(
+        'Erro na requisição. Somente o owner pode fazer alterações'
+      );
     }
   }
 

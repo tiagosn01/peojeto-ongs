@@ -45,8 +45,10 @@ routes.get('/animals-show/:id', AnimalController.show);
 routes.get('/animals/:id', AnimalController.index);
 routes.post('/animals', AnimalController.store);
 routes.put('/animals/:id', AnimalController.update);
+routes.patch('/animals/avatar/:id', AnimalController.patch);
 routes.delete('/animals/:id', AnimalController.delete);
 
+routes.get('/adoptions/:id', AdoptionController.index);
 routes.post('/adoptions/:id', AdoptionController.store);
 
 // mostra botões de admins para cadastros
