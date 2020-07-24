@@ -113,11 +113,7 @@ const RegisterAdoption = () => {
             </BackButton>
 
             <Title>Escolha o animal</Title>
-            <ScrollView
-              style={{ maxHeight: 400 }}
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-            >
+            <ScrollView style={{ maxHeight: 400 }} nestedScrollEnabled>
               {selectedAnimal.name ? (
                 <AnimalItem key={selectedAnimal.id}>
                   <AnimalContainer>

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 export const View = styled.View`
+  flex: 1;
   flex-direction: row;
   align-items: center;
   margin-bottom: 8px;
-  margin-left: 8px;
 `;
 
 export const Text = styled.Text`

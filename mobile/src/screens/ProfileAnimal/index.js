@@ -16,6 +16,7 @@ import { useAuth } from '../../hooks/auth';
 
 import api from '../../services/api';
 
+import Checkbox from '../../components/Checkbox';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
@@ -30,15 +31,17 @@ import {
   UserAvatar,
   ProfileButton,
   InputDetail,
+  CheckboxText,
 } from './styles';
 
-const RegisterInstitution = () => {
+const ProfileAnimal = () => {
   const route = useRoute();
   const { animalId } = route.params;
 
   const { user } = useAuth();
   const formRef = useRef();
 
+  const photosInputRef = useRef();
   const detailInputRef = useRef();
 
   const [animal, setAnimal] = useState({});
@@ -47,39 +50,47 @@ const RegisterInstitution = () => {
 
   const { navigate, goBack } = useNavigation();
 
+  const checkboxOptions = [
+    { value: 'true', label: 'Disponível para adoção' },
+    { value: 'false', label: 'Em tratamento' },
+  ];
+
   useEffect(() => {
-    api.get(`/animals-show/${animalId}`).then(response => {
+    async function loadProfileAnimal() {
+      const response = await api.get(`/animals-show/${animalId}`);
+
       setAnimal(response.data);
-    });
+    }
+
+    loadProfileAnimal();
   }, [animalId]);
 
-  const handleSignUp = useCallback(async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       const allData = formRef.current.getData();
 
       if (!allData.name) {
         allData.name = animal.name;
       }
+      if (!allData.photos) {
+        allData.photos = animal.photos;
+      }
       if (!allData.detail) {
         allData.detail = animal.detail;
       }
 
       const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('Email Obrigatório')
-          .email('Digite um e-mail válido'),
-        street: Yup.string().required('Endereço obrigatório'),
-        city: Yup.string().required('Cidade obrigatória'),
-        state: Yup.string().required('Estado obrigatório'),
-        detail: Yup.string().required('Detalhes obrigatório'),
+        available: Yup.string(),
+        name: Yup.string(),
+        photos: Yup.string(),
+        detail: Yup.string(),
       });
 
       await schema.validate(allData, {
         abortEarly: false,
       });
 
-      await api.put('/institutions', allData);
+      await api.put(`/animals/${animalId}`, allData);
 
       Alert.alert('Perfil atualizado com sucesso!');
 
@@ -90,7 +101,7 @@ const RegisterInstitution = () => {
         'Cheque os dados e tente novamente',
       );
     }
-  }, [navigate, animal]);
+  }, [navigate, animal, animalId]);
 
   const handleUpdateAvatar = useCallback(() => {
     ImagePicker.showImagePicker(
@@ -120,15 +131,29 @@ const RegisterInstitution = () => {
 
         const image = await api.post('/files', data);
 
-        await api.patch(`/animals/avatar/${image.data.id}`);
+        await api.patch(`/animals/avatar/${image.data.id}`, { animalId });
       },
     );
   }, [animalId]);
 
+  const handleDeleteAnimal = useCallback(
+    async id => {
+      try {
+        await api.delete(`/animals/${id}`);
+
+        Alert.alert('Registro de animal deletado com sucesso!');
+        return navigate('Animals');
+      } catch (err) {
+        return Alert.alert('Erro!', 'Erro ao deletar usuário cheque os dados.');
+      }
+    },
+    [navigate],
+  );
+
   const confirmDelete = id => {
     Alert.alert(
-      'Excluir Administrador',
-      'Deseja realmente excluir o administrador?',
+      'Excluir Animal',
+      'Deseja realmente excluir o registro do animal?',
       [
         {
           text: 'Cancelar',
@@ -137,7 +162,9 @@ const RegisterInstitution = () => {
         },
         {
           text: 'Sim',
-          onPress: () => {},
+          onPress: () => {
+            handleDeleteAnimal(id);
+          },
         },
       ],
       { cancelable: false },
@@ -180,10 +207,17 @@ const RegisterInstitution = () => {
                 />
               )}
             </UserAvatarButton>
+
             <View>
               <Title>Perfil do animal</Title>
             </View>
-            <Form initialData={animal} onSubmit={handleSignUp} ref={formRef}>
+
+            <Form initialData={animal} onSubmit={handleSubmit} ref={formRef}>
+              <CheckboxText>Status do animal:</CheckboxText>
+              <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+                <Checkbox name="available" options={checkboxOptions} />
+              </View>
+
               <Input
                 name="name"
                 icon="chevrons-right"
@@ -192,6 +226,16 @@ const RegisterInstitution = () => {
                 autoCapitalize="words"
                 onSubmitEditing={() => {
                   detailInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                name="photos"
+                icon="chevrons-right"
+                placeholder="Link das fotos do aniaml"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  photosInputRef.current.focus();
                 }}
               />
 
@@ -213,6 +257,14 @@ const RegisterInstitution = () => {
                 Confirmar alterações
               </Button>
             </Form>
+
+            <Button
+              onPress={() => {
+                confirmDelete(animalId);
+              }}
+            >
+              Apagar animal
+            </Button>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -220,4 +272,4 @@ const RegisterInstitution = () => {
   );
 };
 
-export default RegisterInstitution;
+export default ProfileAnimal;

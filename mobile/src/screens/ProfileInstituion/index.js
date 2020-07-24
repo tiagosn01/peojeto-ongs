@@ -175,6 +175,9 @@ const RegisterInstitution = () => {
   const handleDeleteAdmin = useCallback(
     async adminId => {
       try {
+        if (adminId === user.id) {
+          throw new Error('Erro ao deletar admnistrador.');
+        }
         await api.delete(`/admins/${adminId}`);
 
         return setListAdmins(listAdmins - 1);
@@ -182,7 +185,7 @@ const RegisterInstitution = () => {
         return Alert.alert('Erro!', 'Erro ao deletar usuário cheque os dados.');
       }
     },
-    [listAdmins],
+    [listAdmins, user.id],
   );
 
   const confirmDelete = id => {

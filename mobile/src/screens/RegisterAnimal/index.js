@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -34,12 +34,10 @@ const RegisterAnimal = () => {
   const { user } = useAuth();
   const formRef = useRef();
 
-  const [animalId, setAnimalId] = useState(0);
-
   const sexInputRef = useRef();
   const detailInputRef = useRef();
 
-  const navigation = useNavigation();
+  const { navigate, goBack } = useNavigation();
 
   const checkboxOptions1 = [
     { value: 'Cão', label: 'Cão' },
@@ -63,8 +61,8 @@ const RegisterAnimal = () => {
 
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          sex: Yup.array().required('E-mail obrigatório'),
-          type: Yup.array().required('Endereço obrigatório'),
+          sex: Yup.array().required('Sexo obrigatório'),
+          type: Yup.array().required('Espécie obrigatório'),
           detail: Yup.string().required('Detalhes obrigatório'),
         });
 
@@ -72,13 +70,13 @@ const RegisterAnimal = () => {
           abortEarly: false,
         });
 
-        await api
-          .post('/animals', data)
-          .then(response => setAnimalId(response.id));
+        const response = await api.post('/animals', data);
 
+        const { id } = response.data;
+        const animalId = id;
         Alert.alert('Cadastro do animal realizado com sucesso!');
 
-        navigation.navigate('ProfileAnimal', { animalId });
+        navigate('AvatarAnimal', { animalId });
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
@@ -86,7 +84,7 @@ const RegisterAnimal = () => {
         );
       }
     },
-    [navigation, animalId],
+    [navigate],
   );
 
   return (
@@ -99,7 +97,7 @@ const RegisterAnimal = () => {
         <Header>
           <BackButton
             onPress={() => {
-              navigation.goBack();
+              goBack();
             }}
           >
             <Icon name="chevron-left" size={24} color="#e2dcdc" />
@@ -108,14 +106,14 @@ const RegisterAnimal = () => {
 
           <ProfileButton
             onPress={() => {
-              navigation.navigate('ProfileUser');
+              navigate('ProfileUser');
             }}
           >
             <UserAvatar source={{ uri: user.avatar.url }} />
           </ProfileButton>
         </Header>
 
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView style={{ flex: 1 }}>
           <Container>
             <View>
               <Title>Cadastrar animal</Title>
@@ -153,7 +151,6 @@ const RegisterAnimal = () => {
                 icon="chevrons-right"
                 placeholder="Link para fotos do animal"
                 returnKeyType="next"
-                autoCapitalize="words"
                 onSubmitEditing={() => {
                   sexInputRef.current.focus();
                 }}

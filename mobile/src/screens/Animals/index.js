@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import { ScrollView } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 import { useAuth } from '../../hooks/auth';
 
 import api from '../../services/api';
@@ -32,27 +32,17 @@ import {
   DrawVertical,
 } from './styles';
 
-const Dashboard = () => {
+const Animals = () => {
   const [animals, setAnimals] = useState([]);
   const [institution, setInstitution] = useState({});
   const [admin, setAdmin] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   const route = useRoute();
   const { institutionId } = route.params;
 
   const { user } = useAuth();
   const { navigate, goBack } = useNavigation();
-
-  const navigateToRegisterAdoption = useCallback(() => {
-    navigate('RegisterAdoption', { institutionId });
-  }, [institutionId, navigate]);
-
-  const navigateToProfileAnimal = useCallback(
-    animalId => {
-      navigate('ProfileAnimal', { animalId });
-    },
-    [navigate],
-  );
 
   useEffect(() => {
     async function loadInstitution() {
@@ -73,6 +63,32 @@ const Dashboard = () => {
     api.get(`/animals/${institutionId}`).then(response => {
       setAnimals(response.data);
     });
+  }, [institutionId]);
+
+  const navigateToRegisterAdoption = useCallback(() => {
+    navigate('RegisterAdoption', { institutionId });
+  }, [institutionId, navigate]);
+
+  const navigateToAdoptions = useCallback(() => {
+    navigate('Adoptions', { institutionId });
+  }, [institutionId, navigate]);
+
+  const navigateToProfileAnimal = useCallback(
+    animalId => {
+      navigate('ProfileAnimal', { animalId });
+    },
+    [navigate],
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+
+    setTimeout(() => {
+      api.get(`/animals/${institutionId}`).then(response => {
+        setAnimals(response.data);
+      });
+    }, 1000);
+    setRefresh(false);
   }, [institutionId]);
 
   return (
@@ -97,7 +113,13 @@ const Dashboard = () => {
         </ProfileButton>
       </Header>
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+        }
+      >
         <InstitutionAdmin>
           <InstitutionContainer>
             {institution.avatar && (
@@ -167,7 +189,7 @@ const Dashboard = () => {
             <Button
               title="adoption-consult"
               onPress={() => {
-                navigate('ConsultAdoption');
+                navigateToAdoptions();
               }}
             >
               Consultar Adoção
@@ -177,64 +199,72 @@ const Dashboard = () => {
 
         {institution && <DrawView />}
 
-        <InstitutionTitle>Disponíveis para adoção</InstitutionTitle>
+        <InstitutionTitle style={{ marginBottom: 25 }}>
+          Disponíveis para adoção
+        </InstitutionTitle>
+        <ScrollView style={{ maxHeight: 400 }} nestedScrollEnabled>
+          {animals &&
+            animals.map(animal =>
+              animal.available ? (
+                <InstitutionAdmin key={animal.id}>
+                  <AnimalContainer
+                    onPress={() => navigateToProfileAnimal(animal.id)}
+                  >
+                    <InstitutionAvatar source={{ uri: animal.avatar.url }} />
 
-        {animals &&
-          animals.map(animal =>
-            animal.available ? (
-              <InstitutionAdmin key={animal.id}>
-                <AnimalContainer
-                  onPress={() => navigateToProfileAnimal(animal.id)}
-                >
-                  <InstitutionAvatar source={{ uri: animal.avatar.url }} />
+                    <InstitutionInfo>
+                      <AnimalName>{animal.name}</AnimalName>
 
-                  <InstitutionInfo>
-                    <AnimalName>{animal.name}</AnimalName>
+                      <InstitutionDetail>
+                        <DrawVertical />
+                        <AnimalDetailText>
+                          {animal.type} {'\n'}
+                          {animal.sex} {'\n'}
+                          {animal.detail}
+                        </AnimalDetailText>
+                      </InstitutionDetail>
+                    </InstitutionInfo>
+                  </AnimalContainer>
+                </InstitutionAdmin>
+              ) : null,
+            )}
+        </ScrollView>
 
-                    <InstitutionDetail>
-                      <DrawVertical />
-                      <AnimalDetailText>
-                        {animal.type} {'\n'}
-                        {animal.sex} {'\n'}
-                        {animal.detail}
-                      </AnimalDetailText>
-                    </InstitutionDetail>
-                  </InstitutionInfo>
-                </AnimalContainer>
-              </InstitutionAdmin>
-            ) : null,
-          )}
+        {institution && <DrawView />}
 
-        <InstitutionTitle>Em tratamento</InstitutionTitle>
+        <InstitutionTitle style={{ marginBottom: 25, marginTop: 40 }}>
+          Em tratamento
+        </InstitutionTitle>
+        <ScrollView style={{ maxHeight: 400 }} nestedScrollEnabled>
+          {animals &&
+            animals.map(animal =>
+              animal.available ? null : (
+                <InstitutionAdmin key={animal.id}>
+                  <AnimalContainer
+                    onPress={() => navigateToProfileAnimal(animal.id)}
+                  >
+                    <InstitutionAvatar source={{ uri: animal.avatar.url }} />
 
-        {animals &&
-          animals.map(animal =>
-            animal.available ? null : (
-              <InstitutionAdmin key={animal.id}>
-                <AnimalContainer
-                  onPress={() => navigateToProfileAnimal(animal.id)}
-                >
-                  <InstitutionAvatar source={{ uri: animal.avatar.url }} />
+                    <InstitutionInfo>
+                      <AnimalName>{animal.name}</AnimalName>
 
-                  <InstitutionInfo>
-                    <AnimalName>{animal.name}</AnimalName>
-
-                    <InstitutionDetail>
-                      <DrawVertical />
-                      <AnimalDetailText>
-                        {animal.type} {'\n'}
-                        {animal.sex} {'\n'}
-                        {animal.detail}
-                      </AnimalDetailText>
-                    </InstitutionDetail>
-                  </InstitutionInfo>
-                </AnimalContainer>
-              </InstitutionAdmin>
-            ),
-          )}
+                      <InstitutionDetail>
+                        <DrawVertical />
+                        <AnimalDetailText>
+                          {animal.type} {'\n'}
+                          {animal.sex} {'\n'}
+                          {animal.detail}
+                        </AnimalDetailText>
+                      </InstitutionDetail>
+                    </InstitutionInfo>
+                  </AnimalContainer>
+                </InstitutionAdmin>
+              ),
+            )}
+        </ScrollView>
       </ScrollView>
     </Container>
   );
 };
 
-export default Dashboard;
+export default Animals;
