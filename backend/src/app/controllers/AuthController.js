@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import User from '../models/User';
-import Mail from '../../modules/mailer';
+import Queue from '../../modules/Queue';
+
+import PasswordMail from '../jobs/PasswordMail';
 
 class AuthController {
   async update(req, res) {
@@ -15,21 +17,15 @@ class AuthController {
           .send({ error: 'Erro ao resetar a senha, tente novamente.' });
       }
 
-      const token = crypto.randomBytes(5).toString('hex');
+      const token = crypto.randomBytes(6).toString('hex');
 
       await user.update({
         password: token,
       });
 
-      await Mail.sendMail({
-        to: `${user.name} <${user.email}>`,
-        subject: 'Resete de senha',
-        template: 'resetPassword',
-        context: {
-          user: user.name,
-          password: token,
-        },
-        from: 'helppet@gmail.com',
+      Queue.add(PasswordMail.key, {
+        user,
+        token,
       });
 
       return res.json({ message: 'Senha resetada com sucesso!' });
