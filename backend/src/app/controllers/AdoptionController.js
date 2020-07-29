@@ -61,7 +61,15 @@ class AdoptionController {
     }
 
     const { name, email, cpf } = req.body;
-    const animal = await Animal.findByPk(id);
+    const animal = await Animal.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
+      ],
+    });
 
     if (!animal || animal.situation === true) {
       return res
@@ -77,12 +85,39 @@ class AdoptionController {
       name,
       email,
       cpf,
-      voluntary: user.name,
+      voluntary: animal.user.name,
       institution_id: institution.id,
       animal_id: id,
     });
 
     return res.json(newAdoption);
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const adoption = await Adoption.findByPk(id);
+    if (!adoption) {
+      return res.status(401).json({ error: 'Animal não encontrado' });
+    }
+
+    const isAdmin = await Admin.findOne({ where: { user_id: req.userId } });
+
+    if (!(adoption.institution_id === isAdmin.institution_id)) {
+      return res
+        .status(401)
+        .json({ error: 'Somente os administradores podem deletar' });
+    }
+
+    const animal = await Animal.findByPk(adoption.animal_id);
+
+    animal.situation = false;
+
+    await animal.save();
+
+    await adoption.destroy();
+
+    return res.json({ message: 'O registro do animal foi excluido.' });
   }
 }
 

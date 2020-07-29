@@ -4,9 +4,11 @@ import File from '../models/File';
 import Admin from '../models/Admin';
 import User from '../models/User';
 
+// import Cache from '../../modules/Cache';
+
 class InstitutionController {
   async index(req, res) {
-    //  const cached = await Cache.get('providers');
+    // const cached = await Cache.get('institutions');
 
     // if (cached) {
     //   return res.json(cached);
@@ -22,7 +24,7 @@ class InstitutionController {
       ],
     });
 
-    // await Cache.set('providers', providers);
+    // await Cache.set('institutions', list);
 
     return res.json(list);
   }
@@ -168,6 +170,10 @@ class InstitutionController {
     const institution = await Institution.findOne({
       where: { owner_id: req.userId },
     });
+
+    // if (institution) {
+    //   await Cache.invalidate('institutions');
+    // }
 
     if (!institution || !user) {
       return res.status(400).json({ error: 'Erro na criação do admin.' });

@@ -50,6 +50,7 @@ routes.delete('/animals/:id', AnimalController.delete);
 
 routes.get('/adoptions/:id', AdoptionController.index);
 routes.post('/adoptions/:id', AdoptionController.store);
+routes.delete('/adoptions/:id', AdoptionController.delete);
 
 // mostra botões de admins para cadastros
 routes.get('/isadmins/:id', AdminController.show);

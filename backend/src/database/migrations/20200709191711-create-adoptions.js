@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      rg: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       voluntary: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -36,6 +40,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: false,
+      },
+      canceled_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
