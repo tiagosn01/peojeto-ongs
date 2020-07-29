@@ -17,11 +17,15 @@ module.exports = {
       },
       cpf: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       rg: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      celphone: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       voluntary: {
         type: Sequelize.STRING,
