@@ -138,7 +138,7 @@ const RegisterInstitution = () => {
         }
 
         if (response.error) {
-          Alert.alert('Erro ao atualizar seu avatar.');
+          Alert.alert('Erro ao atualizar o avatar.');
         }
         setAvatar(response);
         const data = new FormData();

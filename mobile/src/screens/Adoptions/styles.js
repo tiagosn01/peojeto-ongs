@@ -1,7 +1,8 @@
 import styled from 'styled-components/native';
+import { FlatList } from 'react-native';
 
 export const Container = styled.View`
-  padding: 0 18px;
+  padding: 0 18px 10px;
 `;
 
 export const ContainerAdoptions = styled.View`
@@ -11,6 +12,11 @@ export const ContainerAdoptions = styled.View`
   border-radius: 10px;
   background: #e2dcdc;
   margin-bottom: 10px;
+`;
+
+export const AdoptionList = styled(FlatList)`
+  padding: 0 0 40px;
+  height: 480px;
 `;
 
 export const BackButton = styled.TouchableOpacity`

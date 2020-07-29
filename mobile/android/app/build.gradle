@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.apphelppet"
+        applicationId "com.helppet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

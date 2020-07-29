@@ -148,7 +148,7 @@ const Animals = () => {
                   size={18}
                   color="#ff9000"
                 />
-                <InstitutionDetailText>
+                <InstitutionDetailText style={{ marginTop: 4 }}>
                   {institution.city} - {institution.state} {'\n'}
                 </InstitutionDetailText>
               </InstitutionDetail>

@@ -6,7 +6,7 @@ import Animals from '../screens/Animals';
 import Adoptions from '../screens/Adoptions';
 import RegisterAnimal from '../screens/RegisterAnimal';
 import RegisterAdoption from '../screens/RegisterAdoption';
-import ConsultAdoption from '../screens/ConsultAdoption';
+import AvatarInstitution from '../screens/AvatarInstitution';
 import ProfileUser from '../screens/ProfileUser';
 import ProfileAnimal from '../screens/ProfileAnimal';
 import ProfileInstitution from '../screens/ProfileInstituion';
@@ -29,11 +29,11 @@ const AppRoutes = () => (
     <App.Screen name="Adoptions" component={Adoptions} />
 
     <App.Screen name="RegisterInstitution" component={RegisterInstitution} />
+    <App.Screen name="AvatarInstitution" component={AvatarInstitution} />
 
     <App.Screen name="AvatarAnimal" component={AvatarAnimal} />
     <App.Screen name="RegisterAnimal" component={RegisterAnimal} />
     <App.Screen name="RegisterAdoption" component={RegisterAdoption} />
-    <App.Screen name="ConsultAdoption" component={ConsultAdoption} />
 
     <App.Screen name="ProfileUser" component={ProfileUser} />
     <App.Screen name="ProfileAnimal" component={ProfileAnimal} />

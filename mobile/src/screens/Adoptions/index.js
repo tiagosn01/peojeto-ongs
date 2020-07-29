@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { FlatList, View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Alert } from 'react-native';
 
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+
+import { format, parseISO } from 'date-fns';
 
 import api from '../../services/api';
 
@@ -15,13 +17,14 @@ import {
   Text,
   AdoptionDetail,
   DeleteButton,
+  AdoptionList,
 } from './styles';
 
 const Adoptions = () => {
   const route = useRoute();
   const { institutionId } = route.params;
 
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
 
   const [adoptions, setAdoptions] = useState([]);
 
@@ -30,6 +33,44 @@ const Adoptions = () => {
       setAdoptions(response.data);
     });
   }, [institutionId]);
+
+  const handleDeleteAdoption = useCallback(
+    async id => {
+      try {
+        await api.delete(`/adoptions/${id}`);
+
+        Alert.alert('Registro de adoção deletado com sucesso!');
+        return navigate('Animals');
+      } catch (err) {
+        return Alert.alert(
+          'Erro!',
+          'Erro ao deletar registro cheque os dados.',
+        );
+      }
+    },
+    [navigate],
+  );
+
+  const confirmDelete = id => {
+    Alert.alert(
+      'Excluir Adoção',
+      'Deseja realmente excluir o registro da adoção? O animal ficara disponível para adoção novamente.',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: () => {
+            handleDeleteAdoption(id);
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  };
 
   return (
     <Container>
@@ -43,7 +84,7 @@ const Adoptions = () => {
 
       <Title>Consulta de adoções</Title>
 
-      <FlatList
+      <AdoptionList
         data={adoptions}
         keyExtractor={adoption => adoption.id.toString()}
         renderItem={({ item }) => (
@@ -73,10 +114,15 @@ const Adoptions = () => {
                 <TextTitle>Animal:</TextTitle>
                 <Text>{item.animal.name}</Text>
               </AdoptionDetail>
+
+              <AdoptionDetail>
+                <TextTitle>Data:</TextTitle>
+                <Text>{format(parseISO(item.created_at), 'dd/MM/yyyy')}</Text>
+              </AdoptionDetail>
             </View>
             <DeleteButton
               onPress={() => {
-                goBack();
+                confirmDelete(item.id);
               }}
             >
               <Icon

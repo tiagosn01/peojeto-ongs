@@ -51,7 +51,7 @@ const RegisterInstitution = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um email válido obrigatório'),
-          street: Yup.string().required('Endereço obrigatório'),
+          street: Yup.string(),
           city: Yup.string().required('Cidade obrigatória'),
           state: Yup.string().required('Estado obrigatório'),
           detail: Yup.string().required('Detalhes obrigatório'),
@@ -65,7 +65,7 @@ const RegisterInstitution = () => {
 
         Alert.alert('Cadastro da instituição realizado com sucesso!');
 
-        navigation.navigate('ProfileInstitution');
+        navigation.navigate('AvatarInstitution');
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
@@ -150,7 +150,7 @@ const RegisterInstitution = () => {
                 ref={streetInputRef}
                 name="street"
                 icon="chevrons-right"
-                placeholder="Endereço"
+                placeholder="Endereço (opcional)"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
