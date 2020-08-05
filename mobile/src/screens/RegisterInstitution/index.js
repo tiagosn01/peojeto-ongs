@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -17,6 +17,7 @@ import api from '../../services/api';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import Select from '../../components/Select';
 
 import {
   Container,
@@ -40,6 +41,37 @@ const RegisterInstitution = () => {
   const detailInputRef = useRef();
 
   const navigation = useNavigation();
+
+  const pickerOptions = useMemo(() => {
+    return [
+      { value: 'AC', label: 'AC' },
+      { value: 'AL', label: 'AL' },
+      { value: 'AP', label: 'AP' },
+      { value: 'BA', label: 'BA' },
+      { value: 'CE', label: 'CE' },
+      { value: 'DF', label: 'DF' },
+      { value: 'GO', label: 'GO' },
+      { value: 'MA', label: 'MA' },
+      { value: 'MT', label: 'MT' },
+      { value: 'MS', label: 'MS' },
+      { value: 'MG', label: 'MG' },
+      { value: 'PA', label: 'PA' },
+      { value: 'PB', label: 'PB' },
+      { value: 'PR', label: 'PR' },
+      { value: 'PE', label: 'PE' },
+      { value: 'PI', label: 'PI' },
+      { value: 'PI', label: 'PI' },
+      { value: 'RJ', label: 'RJ' },
+      { value: 'RN', label: 'RN' },
+      { value: 'RS', label: 'RS' },
+      { value: 'RO', label: 'RO' },
+      { value: 'RR', label: 'RR' },
+      { value: 'SC', label: 'SC' },
+      { value: 'SP', label: 'SP' },
+      { value: 'SE', label: 'SE' },
+      { value: 'TO', label: 'TO' },
+    ];
+  }, []);
 
   const handleSignUp = useCallback(
     async data => {
@@ -158,6 +190,8 @@ const RegisterInstitution = () => {
                 }}
               />
 
+              <Select name="state" options={pickerOptions} />
+
               <Input
                 ref={cityInputRef}
                 name="city"
@@ -167,18 +201,6 @@ const RegisterInstitution = () => {
                 autoCapitalize="words"
                 onSubmitEditing={() => {
                   stateInputRef.current.focus();
-                }}
-              />
-
-              <Input
-                ref={stateInputRef}
-                name="state"
-                icon="chevrons-right"
-                placeholder="Estado"
-                returnKeyType="next"
-                autoCapitalize="words"
-                onSubmitEditing={() => {
-                  detailInputRef.current.focus();
                 }}
               />
 

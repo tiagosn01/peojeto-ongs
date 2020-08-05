@@ -27,6 +27,7 @@ const SignUp = () => {
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const confirmPasswordInputRef = useRef();
 
   const navigation = useNavigation();
 
@@ -41,6 +42,9 @@ const SignUp = () => {
             .required('E-mail obrigatório')
             .email('Digite um email válido obrigatório'),
           password: Yup.string().min(6, 'No mínimo 6 digitos.'),
+          confirmPassword: Yup.string().when('password', (password, field) =>
+            password ? field.required().oneOf([Yup.ref('password')]) : field,
+          ),
         });
 
         await schema.validate(data, {
@@ -57,7 +61,7 @@ const SignUp = () => {
       } catch (err) {
         Alert.alert(
           'Erro no cadastro',
-          'Ocorreu um erro ao fazer o cadastro, cheque os dados e tente novamente',
+          'Email ja existente, ou as senhas não coincidem',
         );
       }
     },
@@ -112,9 +116,22 @@ const SignUp = () => {
                 placeholder="Digite sua senha"
                 textContentType="newPassword"
                 onSubmitEditing={() => {
+                  confirmPasswordInputRef.current.focus();
+                }}
+              />
+
+              <Input
+                ref={confirmPasswordInputRef}
+                name="confirmPassword"
+                icon="lock"
+                secureTextEntry
+                placeholder="Confirme sua senha"
+                textContentType="newPassword"
+                onSubmitEditing={() => {
                   formRef.current.submitForm();
                 }}
               />
+
               <Button
                 onPress={() => {
                   formRef.current.submitForm();

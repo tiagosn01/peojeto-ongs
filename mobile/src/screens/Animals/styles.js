@@ -67,6 +67,7 @@ export const InstitutionName = styled.Text`
 export const InstitutionDetail = styled.View`
   flex-direction: row;
   align-items: center;
+  width: 100%;
 `;
 
 export const InstitutionDetailText = styled.Text`
@@ -110,6 +111,12 @@ export const AnimalName = styled.Text`
   margin-bottom: 2px;
   font-size: 18px;
   color: #e2dcdc;
+`;
+
+export const AnimalDetail = styled.View`
+  flex-direction: row;
+  align-items: center;
+  width: 90%;
 `;
 
 export const AnimalDetailText = styled.Text`

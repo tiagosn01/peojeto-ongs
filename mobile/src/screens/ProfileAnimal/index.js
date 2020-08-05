@@ -5,6 +5,7 @@ import {
   Platform,
   View,
   Alert,
+  Linking,
 } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -19,6 +20,7 @@ import api from '../../services/api';
 import Checkbox from '../../components/Checkbox';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import TextView from '../../components/TextView';
 
 import {
   Container,
@@ -45,6 +47,8 @@ const ProfileAnimal = () => {
   const detailInputRef = useRef();
 
   const [animal, setAnimal] = useState({});
+  const [animalSituation, setAnimalSituation] = useState(false);
+  const [admin, setAdmin] = useState({});
 
   const [avatar, setAvatar] = useState();
 
@@ -59,11 +63,22 @@ const ProfileAnimal = () => {
     async function loadProfileAnimal() {
       const response = await api.get(`/animals-show/${animalId}`);
 
+      setAnimalSituation(response.data.available);
+
+      response.data.available = '';
       setAnimal(response.data);
     }
 
     loadProfileAnimal();
   }, [animalId]);
+
+  useEffect(() => {
+    if (animal.institution_id) {
+      api.get(`/isadmins/${animal.institution_id}`).then(response => {
+        setAdmin(response.data);
+      });
+    }
+  }, [animal.institution_id]);
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -199,73 +214,118 @@ const ProfileAnimal = () => {
         </Header>
 
         <ScrollView keyboardShouldPersistTaps="handled">
-          <Container>
-            <UserAvatarButton onPress={handleUpdateAvatar}>
-              {animal.avatar && (
-                <UserAvatar
-                  source={{ uri: avatar ? avatar.uri : animal.avatar.url }}
-                />
-              )}
-            </UserAvatarButton>
+          {admin.email ? (
+            <Container>
+              <UserAvatarButton onPress={handleUpdateAvatar}>
+                {animal.avatar && (
+                  <UserAvatar
+                    source={{ uri: avatar ? avatar.uri : animal.avatar.url }}
+                  />
+                )}
+              </UserAvatarButton>
 
-            <View>
-              <Title>Perfil do animal</Title>
-            </View>
-
-            <Form initialData={animal} onSubmit={handleSubmit} ref={formRef}>
-              <CheckboxText>Status do animal:</CheckboxText>
-              <View style={{ flexDirection: 'row', marginBottom: 18 }}>
-                <Checkbox name="available" options={checkboxOptions} />
+              <View>
+                <Title>Perfil do animal</Title>
               </View>
 
-              <Input
-                name="name"
-                icon="chevrons-right"
-                placeholder="Nome"
-                returnKeyType="next"
-                autoCapitalize="words"
-                onSubmitEditing={() => {
-                  detailInputRef.current.focus();
-                }}
-              />
+              <Form initialData={animal} onSubmit={handleSubmit} ref={formRef}>
+                <CheckboxText>Status do animal:</CheckboxText>
+                <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+                  <Checkbox
+                    name="available"
+                    options={checkboxOptions}
+                    defaultValue=""
+                  />
+                </View>
 
-              <Input
-                name="photos"
-                icon="chevrons-right"
-                placeholder="Link das fotos do aniaml"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  photosInputRef.current.focus();
-                }}
-              />
+                <Input
+                  name="name"
+                  icon="chevrons-right"
+                  placeholder="Nome"
+                  returnKeyType="next"
+                  autoCapitalize="words"
+                  onSubmitEditing={() => {
+                    detailInputRef.current.focus();
+                  }}
+                />
 
-              <InputDetail
-                ref={detailInputRef}
-                name="detail"
-                icon="chevrons-right"
-                placeholder="Detalhes"
-                onSubmitEditing={() => {
-                  formRef.current.submitForm();
-                }}
-              />
+                <Input
+                  name="photos"
+                  icon="chevrons-right"
+                  placeholder="Link das fotos do aniaml"
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    photosInputRef.current.focus();
+                  }}
+                />
+
+                <InputDetail
+                  ref={detailInputRef}
+                  name="detail"
+                  icon="chevrons-right"
+                  placeholder="Detalhes"
+                  onSubmitEditing={() => {
+                    formRef.current.submitForm();
+                  }}
+                />
+
+                <Button
+                  onPress={() => {
+                    formRef.current.submitForm();
+                  }}
+                >
+                  Confirmar alterações
+                </Button>
+              </Form>
 
               <Button
                 onPress={() => {
-                  formRef.current.submitForm();
+                  confirmDelete(animalId);
                 }}
               >
-                Confirmar alterações
+                Apagar animal
               </Button>
-            </Form>
+            </Container>
+          ) : (
+            <Container>
+              <UserAvatarButton>
+                {animal.avatar && (
+                  <UserAvatar
+                    source={{ uri: avatar ? avatar.uri : animal.avatar.url }}
+                  />
+                )}
+              </UserAvatarButton>
 
-            <Button
-              onPress={() => {
-                confirmDelete(animalId);
-              }}
-            >
-              Apagar animal
-            </Button>
-          </Container>
+              <View>
+                <Title>{animal.name}</Title>
+              </View>
+
+              <View>
+                <CheckboxText>Status do animal:</CheckboxText>
+
+                <TextView icon="chevrons-right">
+                  {animalSituation === true
+                    ? 'Disponível para adoção'
+                    : 'Em tratamento'}
+                </TextView>
+
+                {animal.photos ? (
+                  <TextView
+                    icon="chevrons-right"
+                    onPress={() => Linking.openURL(animal.photos)}
+                  >
+                    Fotos
+                  </TextView>
+                ) : (
+                  <TextView icon="chevrons-right">
+                    Sem fotos para exibir
+                  </TextView>
+                )}
+
+                <TextView icon="chevrons-right">{animal.detail}</TextView>
+              </View>
+            </Container>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </>

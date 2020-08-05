@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
@@ -98,4 +98,20 @@ export const DrawView = styled.View`
   border-bottom-width: 1px;
   margin: 0 24px 0;
   padding: 14px 0 8px;
+`;
+
+export const ContainerForm = styled.View`
+  padding: 20px 24px;
+  flex-direction: row;
+  max-width: 82%;
+`;
+
+export const ButtonForm = styled(TouchableOpacity)`
+  background: #fff;
+  width: 56px;
+  height: 56px;
+  border-radius: 26px;
+  margin-left: 10px;
+  justify-content: center;
+  align-items: center;
 `;

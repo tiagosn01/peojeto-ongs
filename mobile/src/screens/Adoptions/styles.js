@@ -1,8 +1,25 @@
 import styled from 'styled-components/native';
-import { FlatList } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 
 export const Container = styled.View`
   padding: 0 18px 10px;
+  flex: 1;
+`;
+
+export const ContainerForm = styled.View`
+  flex-direction: row;
+  max-width: 80%;
+  margin-bottom: 10px;
+`;
+
+export const ButtonForm = styled(TouchableOpacity)`
+  background: #fff;
+  width: 56px;
+  height: 56px;
+  border-radius: 26px;
+  margin-left: 10px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ContainerAdoptions = styled.View`

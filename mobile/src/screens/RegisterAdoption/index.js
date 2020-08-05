@@ -39,6 +39,8 @@ const RegisterAdoption = () => {
 
   const emailInputRef = useRef();
   const cpfInputRef = useRef();
+  const rgInputRef = useRef();
+  const celphoneInputRef = useRef();
 
   const { goBack, navigate } = useNavigation();
   const [animals, setAnimals] = useState([]);
@@ -76,7 +78,9 @@ const RegisterAdoption = () => {
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
           email: Yup.string().required('E-mail obrigatório'),
-          cpf: Yup.string().min(2, 'No mínimo 6 digitos.'),
+          cpf: Yup.string(),
+          rg: Yup.string(),
+          celphone: Yup.string(),
         });
 
         await schema.validate(data, {
@@ -198,11 +202,34 @@ const RegisterAdoption = () => {
                   cpfInputRef.current.focus();
                 }}
               />
+
+              <Input
+                ref={rgInputRef}
+                name="rg"
+                icon="chevrons-right"
+                placeholder="RG (opcional)"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  cpfInputRef.current.focus();
+                }}
+              />
+
               <Input
                 ref={cpfInputRef}
                 name="cpf"
-                icon="user"
+                icon="chevrons-right"
                 placeholder="CPF (opcional)"
+                autoCapitalize="words"
+                onSubmitEditing={() => {
+                  celphoneInputRef.current.submitForm();
+                }}
+              />
+
+              <Input
+                ref={celphoneInputRef}
+                name="celphone"
+                icon="chevrons-right"
+                placeholder="Celular (opcional)"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
                   formRef.current.submitForm();

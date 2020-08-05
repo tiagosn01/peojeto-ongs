@@ -65,7 +65,6 @@ export const AuthProvider = ({ children }) => {
         token: data.token,
         user,
       });
-      console.log(data);
     },
     [setData, data],
   );

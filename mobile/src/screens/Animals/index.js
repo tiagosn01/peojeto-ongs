@@ -26,6 +26,7 @@ import {
   InstitutionTitle,
   AnimalContainer,
   AnimalName,
+  AnimalDetail,
   AnimalDetailText,
   DrawView,
   ContainerButton,
@@ -75,9 +76,9 @@ const Animals = () => {
 
   const navigateToProfileAnimal = useCallback(
     animalId => {
-      navigate('ProfileAnimal', { animalId });
+      navigate('ProfileAnimal', { animalId, institutionId });
     },
-    [navigate],
+    [navigate, institutionId],
   );
 
   const onRefresh = useCallback(() => {
@@ -215,14 +216,14 @@ const Animals = () => {
                     <InstitutionInfo>
                       <AnimalName>{animal.name}</AnimalName>
 
-                      <InstitutionDetail>
+                      <AnimalDetail>
                         <DrawVertical />
                         <AnimalDetailText>
                           {animal.type} {'\n'}
                           {animal.sex} {'\n'}
                           {animal.detail}
                         </AnimalDetailText>
-                      </InstitutionDetail>
+                      </AnimalDetail>
                     </InstitutionInfo>
                   </AnimalContainer>
                 </InstitutionAdmin>
@@ -248,14 +249,14 @@ const Animals = () => {
                     <InstitutionInfo>
                       <AnimalName>{animal.name}</AnimalName>
 
-                      <InstitutionDetail>
+                      <AnimalDetail>
                         <DrawVertical />
                         <AnimalDetailText>
                           {animal.type} {'\n'}
                           {animal.sex} {'\n'}
                           {animal.detail}
                         </AnimalDetailText>
-                      </InstitutionDetail>
+                      </AnimalDetail>
                     </InstitutionInfo>
                   </AnimalContainer>
                 </InstitutionAdmin>
