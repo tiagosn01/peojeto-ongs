@@ -123,6 +123,27 @@ class InstitutionController {
     }
   }
 
+  async search(req, res) {
+    const { city } = req.body;
+
+    const findInstitution = await Institution.findAll({
+      where: { city },
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
+    });
+
+    if (!findInstitution) {
+      return res.status(400).json({ error: 'Não encontrado' });
+    }
+
+    return res.json(findInstitution);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

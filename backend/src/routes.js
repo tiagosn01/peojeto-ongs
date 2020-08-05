@@ -32,8 +32,11 @@ routes.get('/institution-show/:id', InstitutionController.display);
 // mostra instituição somente para os admins no dashboard
 routes.get('/institutions-admin', InstitutionController.show);
 
-// mostra intituição para o owner
+// mostra intituição para o owner EDITAR
 routes.get('/institution-owner', InstitutionController.owner);
+
+// Busca de instituição no dashboard
+routes.post('/institution-search', InstitutionController.search);
 
 routes.get('/institutions', InstitutionController.index);
 routes.post('/institutions', InstitutionController.store);
@@ -52,6 +55,7 @@ routes.get('/adoptions/:id', AdoptionController.index);
 routes.post('/adoptions/:id', AdoptionController.store);
 routes.delete('/adoptions/:id', AdoptionController.delete);
 
+routes.post('/adoption-search/:id', AdoptionController.search);
 // mostra botões de admins para cadastros
 routes.get('/isadmins/:id', AdminController.show);
 

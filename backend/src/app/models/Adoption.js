@@ -7,7 +7,10 @@ class Adoption extends Model {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
         cpf: Sequelize.STRING,
+        rg: Sequelize.STRING,
+        celphone: Sequelize.STRING,
         voluntary: Sequelize.STRING,
+        canceled_at: Sequelize.DATE,
       },
       {
         sequelize,

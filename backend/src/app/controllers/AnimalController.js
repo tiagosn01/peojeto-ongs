@@ -9,7 +9,16 @@ class AnimalController {
     const { id } = req.params;
 
     const animal = await Animal.findByPk(id, {
-      attributes: ['id', 'name', 'sex', 'type', 'detail', 'photos'],
+      attributes: [
+        'id',
+        'name',
+        'sex',
+        'type',
+        'detail',
+        'photos',
+        'institution_id',
+        'available',
+      ],
       include: [
         {
           model: File,

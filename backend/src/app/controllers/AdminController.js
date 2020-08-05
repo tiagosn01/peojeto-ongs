@@ -5,6 +5,7 @@ import File from '../models/File';
 
 class AdminController {
   async show(req, res) {
+    console.log('[CONSOLELOG ADMIN', req.params);
     const { id } = req.params;
 
     const admin = await Admin.findOne({

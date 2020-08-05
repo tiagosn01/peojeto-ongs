@@ -13,7 +13,17 @@ class AdoptionController {
       where: {
         institution_id: id,
       },
-      attributes: ['id', 'name', 'email', 'cpf', 'voluntary', 'created_at'],
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'celphone',
+        'rg',
+        'cpf',
+        'voluntary',
+        'canceled_at',
+        'created_at',
+      ],
       include: [
         {
           model: Animal,
@@ -31,13 +41,57 @@ class AdoptionController {
     return res.json(listAdoptions);
   }
 
+  async search(req, res) {
+    const { id } = req.params;
+
+    const { rg } = req.body;
+
+    const searchRG = await Adoption.findAll({
+      where: {
+        institution_id: id,
+        rg,
+      },
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'cpf',
+        'rg',
+        'celphone',
+        'voluntary',
+        'canceled_at',
+        'created_at',
+      ],
+      include: [
+        {
+          model: Animal,
+          as: 'animal',
+          attributes: ['name'],
+        },
+        {
+          model: Institution,
+          as: 'institution',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    if (!searchRG) {
+      return res.json({ error: 'Nenhuma adoção encontrada' });
+    }
+
+    return res.json(searchRG);
+  }
+
   async store(req, res) {
     const { id } = req.params;
 
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string().email().required(),
-      cpf: Yup.string().required().min(2),
+      cpf: Yup.string(),
+      rg: Yup.string(),
+      celphone: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -60,7 +114,7 @@ class AdoptionController {
         .json({ error: 'A instituição ou o usuário não existe.' });
     }
 
-    const { name, email, cpf } = req.body;
+    const { name, email, cpf, rg, celphone } = req.body;
     const animal = await Animal.findByPk(id, {
       include: [
         {
@@ -85,6 +139,8 @@ class AdoptionController {
       name,
       email,
       cpf,
+      rg,
+      celphone,
       voluntary: animal.user.name,
       institution_id: institution.id,
       animal_id: id,
@@ -115,7 +171,9 @@ class AdoptionController {
 
     await animal.save();
 
-    await adoption.destroy();
+    adoption.canceled_at = new Date();
+
+    await adoption.save();
 
     return res.json({ message: 'O registro do animal foi excluido.' });
   }

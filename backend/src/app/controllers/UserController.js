@@ -31,16 +31,21 @@ class UserController {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string().email().required(),
-      password: Yup.string().required().min(6),
+      password: Yup.string().min(6),
+      confirmPassword: Yup.string().when('password', (password, field) =>
+        password ? field.required().oneOf([Yup.ref('password')]) : field
+      ),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Erro de validação' });
+      return res.status(400).json({
+        error: 'Erro de validação. Email ja existente ou senha incompatível.',
+      });
     }
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
     if (userExists) {
-      return res.status(400).json({ error: 'O usuário aj existe.' });
+      return res.status(400).json({ error: 'O usuário ja existe.' });
     }
 
     const { id, name, email } = await User.create(req.body);
