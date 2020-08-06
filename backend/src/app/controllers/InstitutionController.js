@@ -15,6 +15,7 @@ class InstitutionController {
     // }
 
     const list = await Institution.findAll({
+      order: ['state'],
       include: [
         {
           model: File,

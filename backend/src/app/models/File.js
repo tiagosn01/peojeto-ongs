@@ -1,4 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
+import aws from 'aws-sdk';
+
+const s3 = new aws.S3();
 
 class File extends Model {
   static init(sequelize) {
@@ -9,7 +12,7 @@ class File extends Model {
         url: {
           type: Sequelize.VIRTUAL,
           get() {
-            return `${process.env.APP_URL}/files/${this.path}`;
+            return `${process.env.APP_IMAGE_URL}/${this.path}`;
           },
         },
       },
@@ -17,6 +20,17 @@ class File extends Model {
         sequelize,
       }
     );
+
+    this.addHook('beforeDestroy', async (file) => {
+      const response = await s3
+        .deleteObject({
+          Bucket: 'upload-helppet',
+          Key: file.path,
+        })
+        .promise();
+
+      return response;
+    });
 
     return this;
   }

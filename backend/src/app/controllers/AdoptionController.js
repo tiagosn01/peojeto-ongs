@@ -13,6 +13,7 @@ class AdoptionController {
       where: {
         institution_id: id,
       },
+      order: ['created_at'],
       attributes: [
         'id',
         'name',

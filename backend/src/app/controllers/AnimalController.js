@@ -41,6 +41,7 @@ class AnimalController {
         institution_id: id,
         situation: false,
       },
+      order: ['name'],
       attributes: [
         'id',
         'name',
