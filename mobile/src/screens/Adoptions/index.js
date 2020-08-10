@@ -135,7 +135,7 @@ const Adoptions = () => {
             <Input
               icon="chevrons-right"
               name="rg"
-              placeholder="Consultar pelo RG ou CPF"
+              placeholder="Consultar pelo RG"
             />
             <ButtonForm
               onPress={() => {
@@ -212,7 +212,7 @@ const Adoptions = () => {
                       name="trash-2"
                       size={24}
                       color="red"
-                      style={{ marginBottom: 80 }}
+                      style={{ marginBottom: 90 }}
                     />
                   </DeleteButton>
                 )}
@@ -283,7 +283,7 @@ const Adoptions = () => {
                       name="trash-2"
                       size={24}
                       color="red"
-                      style={{ marginBottom: 80 }}
+                      style={{ marginBottom: 130 }}
                     />
                   </DeleteButton>
                 )}

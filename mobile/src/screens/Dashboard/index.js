@@ -44,15 +44,19 @@ const Dashboard = () => {
   const { navigate } = useNavigation();
 
   const onRefresh = useCallback(() => {
-    setRefresh(true);
+    try {
+      setRefresh(true);
 
-    setTimeout(() => {
-      api.get('/institutions-admin').then(response => {
-        setAdmins(response.data.institution);
+      setTimeout(() => {
+        api.get('/institutions-admin').then(response => {
+          setAdmins(response.data.institution);
+        });
         setSearch('');
-      });
-    }, 1000);
-    setRefresh(false);
+      }, 1000);
+      setRefresh(false);
+    } catch (err) {
+      Alert.alert('Falha ao carregar instituições.');
+    }
   }, []);
 
   const navigateToAnimals = useCallback(
@@ -63,16 +67,9 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    try {
-      api.get('/institutions-admin').then(response => {
-        setAdmins(response.data.institution);
-      });
-    } catch (err) {
-      Alert.alert(
-        'Erro ao carregar instituição',
-        'Erro ao carregar instituição do admin.',
-      );
-    }
+    api.get('/institutions-admin').then(response => {
+      setAdmins(response.data.institution);
+    });
   }, []);
 
   useEffect(() => {

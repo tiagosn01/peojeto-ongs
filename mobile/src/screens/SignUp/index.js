@@ -54,7 +54,8 @@ const SignUp = () => {
         await api.post('/users', data);
 
         Alert.alert(
-          'Cadastro realizado com sucesso! Você ja pode fazer login na aplicação.',
+          'Cadastro realizado com sucesso.',
+          'Você ja pode fazer login na aplicação.',
         );
 
         navigation.goBack();
@@ -114,6 +115,7 @@ const SignUp = () => {
                 icon="lock"
                 secureTextEntry
                 placeholder="Digite sua senha"
+                returnKeyType="next"
                 textContentType="newPassword"
                 onSubmitEditing={() => {
                   confirmPasswordInputRef.current.focus();

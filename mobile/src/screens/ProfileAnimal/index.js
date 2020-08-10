@@ -309,6 +309,7 @@ const ProfileAnimal = () => {
                     : 'Em tratamento'}
                 </TextView>
 
+                <CheckboxText>Fotos:</CheckboxText>
                 {animal.photos ? (
                   <TextView
                     icon="chevrons-right"
@@ -321,7 +322,7 @@ const ProfileAnimal = () => {
                     Sem fotos para exibir
                   </TextView>
                 )}
-
+                <CheckboxText>Detalhes:</CheckboxText>
                 <TextView icon="chevrons-right">{animal.detail}</TextView>
               </View>
             </Container>

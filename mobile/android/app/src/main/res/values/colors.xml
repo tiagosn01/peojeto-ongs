@@ -2,4 +2,5 @@
 
 <resources>
   <color name="primary">#005338</color>
+  <color name="app_bg">#005338</color>
 </resources>
