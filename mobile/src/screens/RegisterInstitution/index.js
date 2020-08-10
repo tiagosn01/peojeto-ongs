@@ -83,6 +83,7 @@ const RegisterInstitution = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um email válido obrigatório'),
+          cnpj: Yup.string().required('Cnpj obrigatório'),
           street: Yup.string(),
           city: Yup.string().required('Cidade obrigatória'),
           state: Yup.string().required('Estado obrigatório'),
@@ -170,7 +171,7 @@ const RegisterInstitution = () => {
                 ref={cnpjInputRef}
                 name="cnpj"
                 icon="chevrons-right"
-                placeholder="CNPJ (opcional)"
+                placeholder="CNPJ"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {

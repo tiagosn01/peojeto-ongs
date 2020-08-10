@@ -207,7 +207,7 @@ const RegisterAdoption = () => {
                 ref={rgInputRef}
                 name="rg"
                 icon="chevrons-right"
-                placeholder="RG (opcional)"
+                placeholder="RG"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
                   cpfInputRef.current.focus();

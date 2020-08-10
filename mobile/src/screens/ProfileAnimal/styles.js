@@ -40,8 +40,6 @@ export const ProfileButton = styled.TouchableOpacity`
 `;
 export const BackButton = styled.TouchableOpacity``;
 
-export const Form = styled.View``;
-
 export const Title = styled.Text`
   font-size: 24px;
   color: #fff;
@@ -79,6 +77,12 @@ export const UserAvatar = styled.Image`
   width: 186px;
   height: 186px;
   border-radius: 98px;
+`;
+
+export const ViewDetail = styled.View`
+  border-radius: 10px;
+  background: #1c3b2d;
+  padding: 10px;
 `;
 
 export const InputDetail = styled(Input)`

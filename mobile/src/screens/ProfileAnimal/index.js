@@ -33,6 +33,7 @@ import {
   UserAvatar,
   ProfileButton,
   InputDetail,
+  ViewDetail,
   CheckboxText,
 } from './styles';
 
@@ -300,7 +301,7 @@ const ProfileAnimal = () => {
                 <Title>{animal.name}</Title>
               </View>
 
-              <View>
+              <ViewDetail>
                 <CheckboxText>Status do animal:</CheckboxText>
 
                 <TextView icon="chevrons-right">
@@ -324,7 +325,7 @@ const ProfileAnimal = () => {
                 )}
                 <CheckboxText>Detalhes:</CheckboxText>
                 <TextView icon="chevrons-right">{animal.detail}</TextView>
-              </View>
+              </ViewDetail>
             </Container>
           )}
         </ScrollView>

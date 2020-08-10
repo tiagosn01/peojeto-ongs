@@ -7,6 +7,7 @@ import {
   Platform,
   View,
   Alert,
+  StatusBar,
 } from 'react-native';
 
 import { Form } from '@unform/mobile';
@@ -64,6 +65,7 @@ const SignIn = () => {
 
   return (
     <>
+      <StatusBar backgroundColor="#005338" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

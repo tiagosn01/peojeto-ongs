@@ -6,6 +6,7 @@ import {
   Platform,
   View,
   Alert,
+  StatusBar,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -70,6 +71,7 @@ const SignUp = () => {
   );
   return (
     <>
+      <StatusBar backgroundColor="#005338" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
