@@ -79,7 +79,7 @@ const RegisterAdoption = () => {
           name: Yup.string().required('Nome obrigatório'),
           email: Yup.string().required('E-mail obrigatório'),
           cpf: Yup.string(),
-          rg: Yup.string(),
+          rg: Yup.string().required(),
           celphone: Yup.string(),
         });
 

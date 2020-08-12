@@ -82,6 +82,9 @@ const RegisterInstitution = () => {
       if (!allData.email) {
         allData.email = institution.email;
       }
+
+      allData.cnpj = institution.cnpj;
+
       if (!allData.street) {
         allData.street = institution.street;
       }
@@ -100,7 +103,7 @@ const RegisterInstitution = () => {
         email: Yup.string()
           .required('Email Obrigatório')
           .email('Digite um e-mail válido'),
-        street: Yup.string().required('Endereço obrigatório'),
+        street: Yup.string(),
         city: Yup.string().required('Cidade obrigatória'),
         state: Yup.string().required('Estado obrigatório'),
         detail: Yup.string().required('Detalhes obrigatório'),
