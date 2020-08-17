@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'react-native';
+import { StatusBar, LogBox } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import AppProvider from './hooks';
 import Routes from './routes';
@@ -14,8 +14,7 @@ const Index = () => {
     SplashScreen.hide();
   }, []);
 
-  // eslint-disable-next-line no-console
-  console.disableYellowBox = true;
+  LogBox.ignoreAllLogs();
 
   return (
     <NavigationContainer>
