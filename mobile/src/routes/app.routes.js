@@ -9,6 +9,7 @@ import RegisterAdoption from '../screens/RegisterAdoption';
 import AvatarInstitution from '../screens/AvatarInstitution';
 import ProfileUser from '../screens/ProfileUser';
 import ProfileAnimal from '../screens/ProfileAnimal';
+import EditAnimal from '../screens/EditAnimal';
 import ProfileInstitution from '../screens/ProfileInstituion';
 import RegisterInstitution from '../screens/RegisterInstitution';
 import AvatarAnimal from '../screens/AvatarAnimal';
@@ -37,6 +38,7 @@ const AppRoutes = () => (
 
     <App.Screen name="ProfileUser" component={ProfileUser} />
     <App.Screen name="ProfileAnimal" component={ProfileAnimal} />
+    <App.Screen name="EditAnimal" component={EditAnimal} />
     <App.Screen name="ProfileInstitution" component={ProfileInstitution} />
   </App.Navigator>
 );

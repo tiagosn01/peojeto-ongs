@@ -77,10 +77,7 @@ const SignUp = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled
       >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
+        <ScrollView keyboardShouldPersistTaps="handled">
           <Container>
             <Image source={logoImg} />
             <View>
@@ -90,7 +87,7 @@ const SignUp = () => {
               <Input
                 name="name"
                 icon="user"
-                placeholder="Digite seu Nome"
+                placeholder="Digite seu nome"
                 returnKeyType="next"
                 autoCapitalize="words"
                 onSubmitEditing={() => {
