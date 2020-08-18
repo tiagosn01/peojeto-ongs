@@ -134,8 +134,8 @@ android {
         applicationId "com.apphelppet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion 29
-        versionCode 14
-        versionName "1.0.4"
+        versionCode 16
+        versionName "1.0.6"
     }
     splits {
         abi {
