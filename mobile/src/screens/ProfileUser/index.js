@@ -119,6 +119,7 @@ const ProfileUser = () => {
         cancelButtonTitle: 'Cancelar',
         takePhotoButtonTitle: 'Usar camera',
         chooseFromLibraryButtonTitle: 'Escolher da galeria',
+        rotation: 360,
       },
 
       async response => {
@@ -127,7 +128,6 @@ const ProfileUser = () => {
         }
 
         if (response.error) {
-          console.log(response.error);
           Alert.alert('Erro ao atualizar seu avatar.');
         }
         setAvatar(response);

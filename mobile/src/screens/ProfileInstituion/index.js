@@ -133,6 +133,7 @@ const RegisterInstitution = () => {
         cancelButtonTitle: 'Cancelar',
         takePhotoButtonTitle: 'Usar camera',
         chooseFromLibraryButtonTitle: 'Escolher da galeria',
+        rotation: 360,
       },
 
       async response => {
