@@ -2,7 +2,7 @@
 Developed to help animal institutions manage adoptions
 <br /> 
 This app has been published on the Play Store, but currently the application is disabled, due to my lack of time
-### Image Screens
+### Screenshots
 
 
 <div align="center" >
