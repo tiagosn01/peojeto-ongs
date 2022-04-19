@@ -6,7 +6,7 @@ Developed to help animal institutions manage adoptions
 
 
 <div align="center" >
-  <img src="./assets/screens/login.jpg" alt="login-screen" height="425">
+  <img src=".src/assets/screens/login.jpg" alt="login-screen" height="425">
   <img src="./assets/screens/home.jpg" alt="home-screen" height="425">
 </div>
  <div align="center" >   
