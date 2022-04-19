@@ -1,8 +1,9 @@
 # Helppet
 Developed to help animal institutions manage adoptions
-
-
+<br /> 
+This app has been published on the Play Store, but currently the application is disabled, due to my lack of time
 ### Image Screens
+
 
 <div align="center" >
   <img src="./mobile/src/assets/screens/login.jpg" class="mr-2" alt="login-screen" height="425">
@@ -20,5 +21,5 @@ Developed to help animal institutions manage adoptions
 
 
 
-This app has been published on the Play Store, but currently the application is disabled, due to my lack of time
+
 
