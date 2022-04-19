@@ -15,8 +15,8 @@ Developed to help animal institutions manage adoptions
   <img src="./mobile/src/assets/screens/adoptions.jpg" alt="adoptions-screen" height="425">
 </div>
 <div align="center" >
-  <img src="./mobile/src/assets/screens/animal.jpg" alt="home-screen" height="425">
-  <img src="./mobile/src/assets/screens/animal-profile.jpg" alt="home-screen" height="425">
+  <img src="./mobile/src/assets/screens/animal.jpg" alt="animal-screen" height="425">
+  <img src="./mobile/src/assets/screens/anilmal-profile.jpg" alt="animal-profile-screen" height="425">
 </div>
 
 
