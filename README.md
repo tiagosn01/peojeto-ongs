@@ -7,15 +7,16 @@ Developed to help animal institutions manage adoptions
 
 <div align="center" >
   <img src="./mobile/src/assets/screens/login.jpg" class="mr-2" alt="login-screen" height="425">
-  <img src="./mobile/src/assets/screens/home.jpg" alt="home-screen" height="425">
+  <img src="./mobile/src/assets/screens/institution.jpg" alt="institution-screen" height="425">
 </div>
  <div align="center" >   
-  <img src="./mobile/src/assets/screens/institution.jpg" alt="institution-screen" height="425">
+
+  <img src="./mobile/src/assets/screens/home.jpg" alt="home-screen" height="425">
   <img src="./mobile/src/assets/screens/adoptions.jpg" alt="adoptions-screen" height="425">
 </div>
 <div align="center" >
   <img src="./mobile/src/assets/screens/animal.jpg" alt="home-screen" height="425">
-  <img src="./mobile/src/assets/screens/animal-profile" alt="home-screen" height="425">
+  <img src="./mobile/src/assets/screens/animal-profile.jpg" alt="home-screen" height="425">
 </div>
 
 
